@@ -31,7 +31,7 @@ protected:
 public:
 	Texture();
 	Type getType();
-	virtual Color getColor(double x, double y) = 0;
+	virtual Color getColor(double x, double y,bool sphere) = 0;
 };
 
 class PicTexture :public Texture {
@@ -42,7 +42,7 @@ public:
 	PicTexture(std::string);
 	~PicTexture() {}
 	void loadPic();
-	Color getColor(double x, double y);
+	Color getColor(double x, double y, bool sphere);
 };
 
 class ColorTexture :public Texture {
@@ -50,7 +50,7 @@ private:
 	Color textureColor;
 public:
 	ColorTexture(Color c) :textureColor(c) { type = PURE; };
-	Color getColor(double x, double y);
+	Color getColor(double x, double y, bool sphere);
 };
 
 /*******************************************

@@ -12,6 +12,8 @@ PicTexture::PicTexture(std::string p){
 	type = PICTURE;
 	picPath = p;
 	loadPic();
+	cv::Size size = cv::Size(pic.cols/5, pic.rows/5);
+	cv::resize(pic, pic, size, CV_INTER_CUBIC);
 }
 
 void PicTexture::loadPic() {
@@ -19,16 +21,19 @@ void PicTexture::loadPic() {
 	cv::waitKey(0);
 }
 
-Color PicTexture::getColor(double x,double y) {
-	int xx = int(x);
-	int yy = int(y);
-	xx = xx%pic.rows;
-	yy = yy%pic.cols;
-	while (xx <= 0) xx += pic.rows;
-	while (yy <= 0) yy += pic.cols;
-	double r = pic.at<cv::Vec3b>(xx, yy)[0];
+Color PicTexture::getColor(double x,double y, bool sphere) {
+	if (sphere) {
+		x *= pic.rows;
+		y *= pic.cols;
+	}
+
+	int xx = int(x)%pic.rows;
+	int yy = int(y)%pic.cols;
+	while (xx < 0) xx += pic.rows;
+	while (yy < 0) yy += pic.cols;
+	double b = pic.at<cv::Vec3b>(xx, yy)[0];
 	double g = pic.at<cv::Vec3b>(xx, yy)[1];
-	double b = pic.at<cv::Vec3b>(xx, yy)[2];
+	double r = pic.at<cv::Vec3b>(xx, yy)[2];
 	return Color(r,g,b);
 }
 
@@ -36,7 +41,7 @@ Color PicTexture::getColor(double x,double y) {
 /***************    ColorTexture   ******************/
 /*****************************************************/
 
-Color ColorTexture::getColor(double x, double y) {
+Color ColorTexture::getColor(double x, double y, bool sphere) {
 	return textureColor; 
 }
 
@@ -71,11 +76,11 @@ double Plane::intersect(Ray &r) {
 
 Color Plane::getColor(Vector3 &pos) {
 	if (objTexture->getType() == Texture::PURE) {
-		return objTexture->getColor(pos.getX(), pos.getY());
+		return objTexture->getColor(pos.getX(), pos.getY(),false);
 	} else {
 		double tx = ((pos - P) * dx) / dx.getLength();
 		double ty = ((pos - P) * dy) / dy.getLength();
-		return objTexture->getColor(tx, ty);
+		return objTexture->getColor(tx, ty,false);
 	}
 }
 
@@ -89,12 +94,12 @@ Sphere::Sphere(Meterial* m, Texture* t, Vector3 _P, double _r) :P(_P), r(_r) {
 
 Color Sphere::getColor(Vector3 &pos) {
 	if (objTexture->getType() == Texture::PURE) {
-		return objTexture->getColor(0, 0);
+		return objTexture->getColor(0, 0,true);
 	} else  {
 		Vector3 tmp = (pos - P) *(1 / r);
-		double x = asin(tmp.getZ()) + PI / 2;
+		double x = asin(tmp.getZ()) + PI / double(2);
 		double y = atan2(tmp.getX(), tmp.getY());
-		return objTexture->getColor(x, y);
+		return objTexture->getColor(x, y,true);
 	}
 }
 
@@ -108,13 +113,13 @@ double Sphere::intersect(Ray &ray) {
 			return -1;
 		}
 	}
-	double d = sqrt(ll - tp*tp);
-	if (d > r) return -1;
-	double t_ = sqrt(rr - d*d);
-	if (ll > rr) {
+	double dd = ll - tp*tp;
+	if (dd >= rr) return -1;
+	double t_ = sqrt(rr - dd);
+	if (ll >= rr) {
 		return tp - t_;
 	}
-	else if (ll < rr) {
+	else {
 		return tp + t_;
 	}
 	return -1;
