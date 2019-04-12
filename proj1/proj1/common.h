@@ -17,7 +17,7 @@ class Ray{
 public:
 	Vector3 o;
 	Vector3 dir;
-	Ray(Vector3 origin, Vector3 direction) :o(origin), dir(direction) {};
+	Ray(Vector3 origin, Vector3 direction) :o(origin), dir(direction) { dir.normalize(); };
 	Ray(Ray& r) : o(r.o), dir(r.dir) {};
 	void set(Vector3 origin, Vector3 direction) {
 		o = origin;
@@ -39,7 +39,7 @@ public:
 	Color color;
 	double radius;
 	double brightness;
-	Light():o(Vector3(0,0,0)),color(Color(0,0,0)),radius(0),brightness(0) {}
+	Light():o(Vector3(0,0,0)),color(Color(0,0,0)),radius(10000),brightness(0) {}
 	Light(Vector3 origin, Color c, double r,double b) : o(origin),color(c),radius(r),brightness(b){}
 	void set(Vector3 origin, Color c, double r,double b) {
 		o = origin;

@@ -2,6 +2,7 @@
 #define BUILDER_H
 #include "camera.h"
 #include "scene.h"
+#include "Raytracer.h"
 
 class Builder {
 	Scene* scene;

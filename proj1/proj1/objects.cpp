@@ -16,7 +16,6 @@ PicTexture::PicTexture(std::string p){
 
 void PicTexture::loadPic() {
 	pic = cv::imread(picPath);
-	cv::imshow("test", pic);
 	cv::waitKey(0);
 }
 

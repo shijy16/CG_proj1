@@ -31,7 +31,7 @@ protected:
 public:
 	Texture();
 	Type getType();
-	Color getColor(double x, double y) { return Color(0, 0, 0); };
+	virtual Color getColor(double x, double y) = 0;
 };
 
 class PicTexture :public Texture {
@@ -73,6 +73,8 @@ public:
 	double getspecular() { return objMeterial->specular; }
 	bool isLight() { return light; }
 	void setAsLight(Light* _l) { light = true; l = _l; }
+	void setAsLight() { light = true; l = new Light(); }
+	void setAsLight(double brightness) { light = true; l = new Light(); l->brightness = brightness; }
 	virtual Color getColor(Vector3 &pos) = 0;
 	virtual double intersect(Ray &r) = 0;
 };
