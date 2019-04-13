@@ -33,6 +33,5 @@ int main(void){
 	b->rayTracer_begin();
 	stop = time(NULL);
 	printf("Used Time:%ld\n", (stop - start));
-	system("pause");
 	return 0;
 }
