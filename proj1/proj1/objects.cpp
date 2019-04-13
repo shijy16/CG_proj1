@@ -84,6 +84,14 @@ Color Plane::getColor(Vector3 &pos) {
 	}
 }
 
+Vector3 Plane::getLightCenter() {
+	return P;
+}
+
+Vector3 Plane::getNormal(Vector3 pos) {
+	return n;
+}
+
 /****************************************************/
 /******************    Sphere  **********************/
 /****************************************************/
@@ -123,4 +131,12 @@ double Sphere::intersect(Ray &ray) {
 		return tp + t_;
 	}
 	return -1;
+}
+
+Vector3 Sphere::getLightCenter() {
+	return P;
+}
+
+Vector3 Sphere::getNormal(Vector3 pos) {
+	return (pos - P)*r;
 }

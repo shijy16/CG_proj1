@@ -69,14 +69,16 @@ public:
 	std::string getName() { return name; }
 	double getReflect() { return objMeterial->reflect; }
 	double getRefract() { return objMeterial->refract; }
-	double getdiffuse() { return objMeterial->diffuse; }
-	double getspecular() { return objMeterial->specular; }
+	double getDiffuse() { return objMeterial->diffuse; }
+	double getSpecular() { return objMeterial->specular; }
 	bool isLight() { return light; }
 	void setAsLight(Light* _l) { light = true; l = _l; }
 	void setAsLight() { light = true; l = new Light(); }
 	void setAsLight(double brightness) { light = true; l = new Light(); l->brightness = brightness; }
 	virtual Color getColor(Vector3 &pos) = 0;
 	virtual double intersect(Ray &r) = 0;
+	virtual Vector3 getLightCenter() { return Vector3(); }
+	virtual Vector3 getNormal(Vector3 pos) = 0;
 };
 
 class Plane :public Object {
@@ -90,6 +92,8 @@ public:
 	Plane(Meterial* m, Texture* t, Vector3 _P, Vector3 _n, double _D);
 	Color getColor(Vector3 &pos);
 	double intersect(Ray &r);
+	Vector3 getLightCenter();
+	Vector3 getNormal(Vector3 pos);
 };
 
 class Sphere :public Object {
@@ -100,6 +104,8 @@ public:
 	Sphere(Meterial* m, Texture* t, Vector3 _P, double _r);
 	Color getColor(Vector3 &pos);
 	double intersect(Ray &r);
+	Vector3 getLightCenter();
+	Vector3 getNormal(Vector3 pos);
 };
 
 #endif

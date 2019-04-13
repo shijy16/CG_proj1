@@ -17,6 +17,8 @@ void RayTracer::writeImg() {
 void RayTracer::run() {
 	printf("RayRtacer begin\n");
 	result = cv::Mat::zeros(imgWidth, imgHeight,CV_8UC3);
+#pragma omp parallel
+#pragma omp for schedule(dynamic,2)
 	for (int i = 0; i < imgHeight; i++) {
 		printf("%.2lf%%\r", i * 100.0 / imgHeight);
 		for (int j = 0; j < imgWidth; j++) {
@@ -28,7 +30,6 @@ void RayTracer::run() {
 		}
 	}
 	showImg();
-	cv::waitKey(0);
 	writeImg();
 }
 
@@ -43,8 +44,42 @@ Color RayTracer::trace(Ray* r,double length) {
 	Object* intersectObj = inter->obj;
 	double intersectT = inter->t;
 	Vector3 intersectPos = r->o + r->dir*intersectT;
+	double reflect = intersectObj->getReflect();
+	double refract = intersectObj->getRefract();
+	double diffuse = intersectObj->getDiffuse();
+	double specular = intersectObj->getSpecular();
 	if (intersectObj->isLight()) {
-		return intersectObj->getColor(intersectPos)*((double)1 - length/maxLightLen);
+		return intersectObj->getColor(intersectPos);
+	}
+	else {
+		Color c = new Color();
+		for (int i = 0; i < scene->getObjCnt(); i++) {
+			Object* obj = scene->getObj(i);
+			if (obj->isLight()) {
+				if (diffuse > 0) {
+					Vector3 L = obj->getLightCenter() - intersectPos;
+					L.normalize();
+					Vector3 N = intersectObj->getNormal(intersectPos);
+					N.normalize();
+					double dot = N*L;
+					if (dot > 0) {
+						//Âþ·´Éä ºÃ³ó°¡
+						double diff = dot * diffuse;
+						obj->getColor(obj->getLightCenter());
+						c += Vector3::mul(obj->getColor(obj->getLightCenter()),intersectObj->getColor(intersectPos))*diff;
+						//·´Éä
+						double ref = (L - N*dot*2.0)*r->dir;
+						if (ref > 0) {
+							pow(ref, 8);
+							c += intersectObj->getColor(intersectPos)*specular;
+						}
+					}
+
+				}
+			
+			}
+		}
+		return c;
 	}
 	
 	return Color(0, 0, 0);
