@@ -33,8 +33,8 @@ void RayTracer::run() {
 	writeImg();
 }
 
-Color RayTracer::trace(Ray* r,double length) {
-	if (length > maxLightLen) return Color(0, 0, 0);
+Color RayTracer::trace(Ray* r,double depth) {
+	if (depth > MAX_DEPTH) return Color(0, 0, 0);
 
 	IntersectPoint* inter = scene->getIntersectObj(*r);
 	if (inter == NULL) {
@@ -48,36 +48,43 @@ Color RayTracer::trace(Ray* r,double length) {
 	double refract = intersectObj->getRefract();
 	double diffuse = intersectObj->getDiffuse();
 	double specular = intersectObj->getSpecular();
+	Vector3 N = intersectObj->getNormal(intersectPos);
+	Color intersectColor = intersectObj->getColor(intersectPos);
 	if (intersectObj->isLight()) {
-		return intersectObj->getColor(intersectPos);
+		return intersectColor;
 	}
 	else {
 		Color c = new Color();
 		for (int i = 0; i < scene->getObjCnt(); i++) {
 			Object* obj = scene->getObj(i);
 			if (obj->isLight()) {
+
 				if (diffuse > 0) {
 					Vector3 L = obj->getLightCenter() - intersectPos;
 					L.normalize();
-					Vector3 N = intersectObj->getNormal(intersectPos);
 					N.normalize();
 					double dot = N*L;
 					if (dot > 0) {
-						//Âþ·´Éä ºÃ³ó°¡
-						double diff = dot * diffuse;
-						obj->getColor(obj->getLightCenter());
-						c += Vector3::mul(obj->getColor(obj->getLightCenter()),intersectObj->getColor(intersectPos))*diff;
+						////Âþ·´Éä
+						//double diff = dot * diffuse;
+						//obj->getColor(obj->getLightCenter());
+						//c += Vector3::mul(obj->getColor(obj->getLightCenter()),intersectObj->getColor(intersectPos))*diff;
+						
 						//·´Éä
 						double ref = (L - N*dot*2.0)*r->dir;
 						if (ref > 0) {
 							pow(ref, 8);
-							c += intersectObj->getColor(intersectPos)*specular;
+							c += intersectColor*specular;
 						}
 					}
 
 				}
-			
 			}
+		}
+		if (reflect > 0) {
+			Vector3 d = r->dir - N*(r->dir*N)*2;
+			d.normalize();
+			c += Vector3::mul(trace(new Ray(intersectPos + d*0.01, d), depth + 1),intersectColor)*reflect;
 		}
 		return c;
 	}

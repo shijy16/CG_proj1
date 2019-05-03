@@ -10,7 +10,7 @@ void Builder::buildScene(Object** objs, int num) {
 		scene->addObj(objs[i]);
 	}
 	//build the room
-	Meterial* wall_m = new Meterial(0, 0, 0.1, 0.2);
+	Meterial* wall_m = new Meterial(0.001, 0, 0.1, 0.2);
 	Texture* wall_t = new ColorTexture(Color(0, 0, 0));
 	Texture* wall_red = new ColorTexture(Color(255, 0, 0));
 	Texture* wall_yellow = new ColorTexture(Color(255, 255, 0));

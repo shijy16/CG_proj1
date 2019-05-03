@@ -13,7 +13,7 @@ int main(void){
 	time_t start, stop;
 	start = time(NULL);
 	Scene s = Scene();
-	Meterial* m = s.getMeterial(0, 0.2, 0.1, 0.6);
+	Meterial* m = s.getMeterial(0.5, 0.2, 0.1, 0.6);
 	Object** o;
 	o = new Object*[10];
 
