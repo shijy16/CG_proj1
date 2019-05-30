@@ -75,7 +75,7 @@ Color RayTracer::trace(Ray* r,float depth) {
 			}
 		}
 		if (reflect > 0.0f) {
-			Vector3 rf_light = r->dir - N*(Vector3::dot(r->dir,N))*2.0;		//反射光线
+			Vector3 rf_light = r->dir - N*(Vector3::dot(r->dir,N))*2.0f;		//反射光线
 			rf_light.normalize();
 			c += Vector3::mul(trace(new Ray(intersectPos + rf_light*0.01, rf_light), depth + 1),intersectColor)*reflect;	//反射光线出发点是物体外一点点
 		}
