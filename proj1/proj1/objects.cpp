@@ -31,9 +31,9 @@ Color PicTexture::getColor(float x,float y, bool sphere) {
 	int yy = int(y)%pic.cols;
 	while (xx < 0) xx += pic.rows;
 	while (yy < 0) yy += pic.cols;
-	float b = pic.at<cv::Vec3b>(xx, yy)[0]/(double)255;
-	float g = pic.at<cv::Vec3b>(xx, yy)[1]/ (double)255;
-	float r = pic.at<cv::Vec3b>(xx, yy)[2]/ (double)255;
+	float b = pic.at<cv::Vec3b>(xx, yy)[0]/(float)255;
+	float g = pic.at<cv::Vec3b>(xx, yy)[1]/ (float)255;
+	float r = pic.at<cv::Vec3b>(xx, yy)[2]/ (float)255;
 	return Color(r,g,b);
 }
 
@@ -66,9 +66,9 @@ Plane::Plane(Meterial* m, Texture* t,Vector3 _P, Vector3 _n, float _D) :P(_P),n(
 }
 
 float Plane::intersect(Ray &r) {
-	float deno = r.dir*n;
+	float deno = Vector3::dot(r.dir,n);
 	if (deno == 0) return -1;
-	float res = -(D + n*r.o);
+	float res = -(D + Vector3::dot(n,r.o));
 	res /= deno;
 	if (res > 0) return res;
 	else return -1;
@@ -78,8 +78,8 @@ Color Plane::getColor(Vector3 &pos) {
 	if (objTexture->getType() == Texture::PURE) {
 		return objTexture->getColor(pos.getX(), pos.getY(),false);
 	} else {
-		float tx = ((pos - P) * dx) / dx.getLength();
-		float ty = ((pos - P) * dy) / dy.getLength();
+		float tx = Vector3::dot(pos - P, dx) / dx.getLength();
+		float ty = Vector3::dot(pos - P, dy) / dy.getLength();
 		return objTexture->getColor(tx, ty,false);
 	}
 }
@@ -113,8 +113,8 @@ Color Sphere::getColor(Vector3 &pos) {
 
 float Sphere::intersect(Ray &ray) {
 	Vector3 l = P - ray.o;
-	float tp = l*ray.dir;
-	float ll = l*l;
+	float tp = Vector3::dot(l,ray.dir);
+	float ll = Vector3::dot(l, l);
 	float rr = r*r;
 	if (ll > rr) {
 		if (tp < 0) {

@@ -13,8 +13,8 @@ public:
 	int lenY;
 	Camera(Vector3 _eye,Vector3 _po,Vector3 _dx,Vector3 _dy,int x,int y):
 		eye(_eye),planeOrigin(_po),dx(_dx),dy(_dy),lenX(x),lenY(y) {
-		dx.normalize();
-		dy.normalize();
+		/*dx.normalize();
+		dy.normalize();*/
 	}
 	Ray* getCameraRay(int x, int y) {
 		Vector3 p = planeOrigin + dx*float(x) + dy*float(y);

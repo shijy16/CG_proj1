@@ -13,11 +13,11 @@ int main(void){
 	time_t start, stop;
 	start = time(NULL);
 	Scene s = Scene();
-	Meterial* m = s.getMeterial(0.5, 0.2, 0.1, 0.6);
+	Meterial* m = s.getMeterial(0.5, 0.2, 1, 0.6);
 	Object** o;
 	o = new Object*[10];
 
-	ColorTexture* tt = s.getColorTexture(Color((double)192/ (double)192, (double)100/ (double)192, 1.0f));
+	ColorTexture* tt = s.getColorTexture(Color((float)192 / (float)255, (float)192 / (float)255, (float)192 / (float)255));
 	o[0] = s.getSphere(m, tt, Vector3(100, 550, 50), 50);
 
 

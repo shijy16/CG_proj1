@@ -48,7 +48,7 @@ Color RayTracer::trace(Ray* r,float depth) {
 	float refract = intersectObj->getRefract();
 	float diffuse = intersectObj->getDiffuse();
 	float specular = intersectObj->getSpecular();
-	Vector3 N = intersectObj->getNormal(intersectPos);
+	Vector3 N = intersectObj->getNormal(intersectPos);	//交点法向量
 	Color intersectColor = intersectObj->getColor(intersectPos);
 	if (intersectObj->isLight()) {
 		return intersectColor;
@@ -58,33 +58,28 @@ Color RayTracer::trace(Ray* r,float depth) {
 		for (int i = 0; i < scene->getObjCnt(); i++) {
 			Object* obj = scene->getObj(i);
 			if (obj->isLight()) {
-				Vector3 L = obj->getLightCenter() - intersectPos;
+				Vector3 L = obj->getLightCenter() - intersectPos;	//交点到光源
 				L.normalize();
 				N.normalize();
 				if (diffuse > 0) {
-					float dot = N*L;
+					float dot = Vector3::dot(N,L);
 					if (dot > 0) {
-						////漫反射
+						//漫反射
 						float diff = dot * diffuse;
 						obj->getColor(obj->getLightCenter());
 						c += Vector3::mul(obj->getColor(obj->getLightCenter()),intersectObj->getColor(intersectPos))*diff;
-						
-						////反射
-						//float ref = (L - N*dot*2.0)*r->dir;
-						//if (ref > 0) {
-						//	pow(ref, 8);
-						//	c += intersectColor*specular;
-						//}
+					
 					}
 
 				}
 			}
 		}
-		if (reflect > 0) {
-			Vector3 d = r->dir - N*(r->dir*N)*2;
-			d.normalize();
-			c += Vector3::mul(trace(new Ray(intersectPos + d*0.01, d), depth + 1),intersectColor)*reflect;
+		if (reflect > 0.0f) {
+			Vector3 rf_light = r->dir - N*(Vector3::dot(r->dir,N))*2.0;		//反射光线
+			rf_light.normalize();
+			c += Vector3::mul(trace(new Ray(intersectPos + rf_light*0.01, rf_light), depth + 1),intersectColor)*reflect;	//反射光线出发点是物体外一点点
 		}
+
 		return c;
 	}
 	
