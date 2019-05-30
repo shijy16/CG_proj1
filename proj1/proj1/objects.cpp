@@ -21,7 +21,7 @@ void PicTexture::loadPic() {
 	cv::waitKey(0);
 }
 
-Color PicTexture::getColor(double x,double y, bool sphere) {
+Color PicTexture::getColor(float x,float y, bool sphere) {
 	if (sphere) {
 		x *= pic.rows;
 		y *= pic.cols;
@@ -31,9 +31,9 @@ Color PicTexture::getColor(double x,double y, bool sphere) {
 	int yy = int(y)%pic.cols;
 	while (xx < 0) xx += pic.rows;
 	while (yy < 0) yy += pic.cols;
-	double b = pic.at<cv::Vec3b>(xx, yy)[0];
-	double g = pic.at<cv::Vec3b>(xx, yy)[1];
-	double r = pic.at<cv::Vec3b>(xx, yy)[2];
+	float b = pic.at<cv::Vec3b>(xx, yy)[0]/(double)255;
+	float g = pic.at<cv::Vec3b>(xx, yy)[1]/ (double)255;
+	float r = pic.at<cv::Vec3b>(xx, yy)[2]/ (double)255;
 	return Color(r,g,b);
 }
 
@@ -41,7 +41,7 @@ Color PicTexture::getColor(double x,double y, bool sphere) {
 /***************    ColorTexture   ******************/
 /*****************************************************/
 
-Color ColorTexture::getColor(double x, double y, bool sphere) {
+Color ColorTexture::getColor(float x, float y, bool sphere) {
 	return textureColor; 
 }
 
@@ -49,7 +49,7 @@ Color ColorTexture::getColor(double x, double y, bool sphere) {
 /****************************************************/
 /******************    Plane   **********************/
 /*****************************************************/
-Plane::Plane(Meterial* m, Texture* t,Vector3 _P, Vector3 _n, double _D) :P(_P),n(_n), D(_D) {
+Plane::Plane(Meterial* m, Texture* t,Vector3 _P, Vector3 _n, float _D) :P(_P),n(_n), D(_D) {
 	objMeterial = m;
 	objTexture = t;
 	if (n.getX() == 0) {
@@ -65,10 +65,10 @@ Plane::Plane(Meterial* m, Texture* t,Vector3 _P, Vector3 _n, double _D) :P(_P),n
 	}
 }
 
-double Plane::intersect(Ray &r) {
-	double deno = r.dir*n;
+float Plane::intersect(Ray &r) {
+	float deno = r.dir*n;
 	if (deno == 0) return -1;
-	double res = -(D + n*r.o);
+	float res = -(D + n*r.o);
 	res /= deno;
 	if (res > 0) return res;
 	else return -1;
@@ -78,8 +78,8 @@ Color Plane::getColor(Vector3 &pos) {
 	if (objTexture->getType() == Texture::PURE) {
 		return objTexture->getColor(pos.getX(), pos.getY(),false);
 	} else {
-		double tx = ((pos - P) * dx) / dx.getLength();
-		double ty = ((pos - P) * dy) / dy.getLength();
+		float tx = ((pos - P) * dx) / dx.getLength();
+		float ty = ((pos - P) * dy) / dy.getLength();
 		return objTexture->getColor(tx, ty,false);
 	}
 }
@@ -95,7 +95,7 @@ Vector3 Plane::getNormal(Vector3 pos) {
 /****************************************************/
 /******************    Sphere  **********************/
 /****************************************************/
-Sphere::Sphere(Meterial* m, Texture* t, Vector3 _P, double _r) :P(_P), r(_r) {
+Sphere::Sphere(Meterial* m, Texture* t, Vector3 _P, float _r) :P(_P), r(_r) {
 	objMeterial = m;
 	objTexture = t;
 }
@@ -105,25 +105,25 @@ Color Sphere::getColor(Vector3 &pos) {
 		return objTexture->getColor(0, 0,true);
 	} else  {
 		Vector3 tmp = (pos - P) *(1 / r);
-		double x = asin(tmp.getZ()) + PI / double(2);
-		double y = atan2(tmp.getX(), tmp.getY());
+		float x = asin(tmp.getZ()) + PI / float(2);
+		float y = atan2(tmp.getX(), tmp.getY());
 		return objTexture->getColor(x, y,true);
 	}
 }
 
-double Sphere::intersect(Ray &ray) {
+float Sphere::intersect(Ray &ray) {
 	Vector3 l = P - ray.o;
-	double tp = l*ray.dir;
-	double ll = l*l;
-	double rr = r*r;
+	float tp = l*ray.dir;
+	float ll = l*l;
+	float rr = r*r;
 	if (ll > rr) {
 		if (tp < 0) {
 			return -1;
 		}
 	}
-	double dd = ll - tp*tp;
+	float dd = ll - tp*tp;
 	if (dd >= rr) return -1;
-	double t_ = sqrt(rr - dd);
+	float t_ = sqrt(rr - dd);
 	if (ll >= rr) {
 		return tp - t_;
 	}

@@ -10,20 +10,19 @@ void Builder::buildScene(Object** objs, int num) {
 		scene->addObj(objs[i]);
 	}
 	//build the room
-	Meterial* wall_m = new Meterial(0.001, 0, 0.1, 0.2);
-	Texture* wall_t = new ColorTexture(Color(0, 0, 0));
-	Texture* wall_red = new ColorTexture(Color(255, 0, 0));
-	Texture* wall_yellow = new ColorTexture(Color(255, 255, 0));
-	Texture* wall_bl = new ColorTexture(Color(0, 255, 255));
+	Meterial* wall_m = new Meterial(0, 0, 1,0);
+	Texture* wall_red = new ColorTexture(Color(1, 0, 0));
+	Texture* wall_yellow = new ColorTexture(Color(1, 1, 0));
+	Texture* wall_bl = new ColorTexture(Color(0, 1, 1));
 	Texture* ground = new PicTexture("texture.png");
-	Plane* w1 = new  Plane(wall_m, wall_red, Vector3(0, 0, 0), Vector3(1, 0, 0), 0);
-	Plane* w2 = new  Plane(wall_m, wall_yellow, Vector3(0, 0, 0), Vector3(0, 1, 0), 0);
-	Plane* w3 = new  Plane(wall_m, ground, Vector3(0, 0, 0), Vector3(0, 0, 1), 0);
-	Plane* w4 = new  Plane(wall_m, wall_t, Vector3(0, 0, 0), Vector3(-1, 0, 0), 1000);
-	Plane* w5 = new  Plane(wall_m, wall_yellow, Vector3(0, 0, 0), Vector3(0, -1, 0), 1000);
-	Plane* w6 = new  Plane(wall_m, wall_bl, Vector3(0, 0, 0), Vector3(0, 0, -1), 1000);
-	Sphere* lightSource = new Sphere(new Meterial(0, 0, 0, 0),new ColorTexture(Color(255, 255, 255)), Vector3(100, 500, 1000),40.0);
-	lightSource->setAsLight(new Light(Vector3(500, 500, 1000),Color(255,255,255),5000,1));
+	Plane* w1 = new  Plane(wall_m, wall_red, Vector3(0, 0, 0), Vector3(1, 0, 0), 0);			//正面
+	Plane* w2 = new  Plane(wall_m, wall_bl, Vector3(0, 0, 0), Vector3(0, 1, 0), 0);				//左边
+	Plane* w3 = new  Plane(wall_m, ground, Vector3(0, 0, 0), Vector3(0, 0, 1), 0);				//地板
+	Plane* w4 = new  Plane(wall_m, wall_bl, Vector3(0, 0, 0), Vector3(-1, 0, 0), 1000);
+	Plane* w5 = new  Plane(wall_m, wall_yellow, Vector3(0, 0, 0), Vector3(0, -1, 0), 1000);		//右边
+	Plane* w6 = new  Plane(wall_m, wall_bl, Vector3(0, 0, 0), Vector3(0, 0, -1), 1000);			//天花板
+	Sphere* lightSource = new Sphere(new Meterial(0, 0, 0, 0),new ColorTexture(Color(1, 1, 1)), Vector3(100, 500, 1000),40.0);
+	lightSource->setAsLight(new Light(Vector3(500, 500, 1000),Color(1,1,1),5000,1));
 	scene->addObj(w1);
 	scene->addObj(w2);
 	scene->addObj(w3);

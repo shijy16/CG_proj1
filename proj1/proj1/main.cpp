@@ -17,12 +17,12 @@ int main(void){
 	Object** o;
 	o = new Object*[10];
 
-	ColorTexture* tt = s.getColorTexture(Color(25, 100, 255));
+	ColorTexture* tt = s.getColorTexture(Color((double)192/ (double)192, (double)100/ (double)192, 1.0f));
 	o[0] = s.getSphere(m, tt, Vector3(100, 550, 50), 50);
 
 
-	Texture* t = s.getPicTexture("texture.png");
-	o[1] = s.getSphere(m, t, Vector3(150, 400, 100), 100);
+//	Texture* t = s.getPicTexture("texture.png");
+	o[1] = s.getSphere(m, tt, Vector3(150, 400, 100), 100);
 
 
 	Builder* b = new Builder();

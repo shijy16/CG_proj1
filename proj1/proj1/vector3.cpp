@@ -12,21 +12,21 @@ Vector3::Vector3() {
 	z = 0;
 }
 
-Vector3::Vector3(double a, double b, double c){
+Vector3::Vector3(float a, float b, float c){
 	x = a;
 	y = b;
 	z = c;
 }
 
-double Vector3::getX(){
+float Vector3::getX(){
 	return x;
 }
 
-double Vector3::getY(){
+float Vector3::getY(){
 	return y;
 }
 
-double Vector3::getZ(){
+float Vector3::getZ(){
 	return z;
 }
 
@@ -36,12 +36,12 @@ void Vector3::show(){
 }
 
 void Vector3::normalize(){
-	double s = sqrt(x*x + y*y + z*z);
+	float s = sqrt(x*x + y*y + z*z);
 	x /= s;
 	y /= s;
 	z /= s;
 }
 
-double Vector3::getLength() {
+float Vector3::getLength() {
 	return sqrt(x*x + y*y + z*z);
 }
