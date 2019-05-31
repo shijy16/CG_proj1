@@ -11,17 +11,18 @@ void Builder::buildScene(Object** objs, int num) {
 	}
 	//build the room
 	Meterial* wall_m = new Meterial(0, 0, 1,0);
-	Meterial* groud_m = new Meterial(0.5, 0, 1, 0);
+	Meterial* groud_m = new Meterial(0.2f, 0, 0.7f, 0);
 	Texture* wall_red = new ColorTexture(Color(1, 0, 0));
 	Texture* wall_yellow = new ColorTexture(Color(1, 1, 0));
 	Texture* wall_bl = new ColorTexture(Color(0, 1, 1));
 	Texture* wall_white = new ColorTexture(Color(1, 1, 1));
-	Texture* ground = new PicTexture("texture.png");
+	Texture* ground = new PicTexture("floor1.bmp");
+	//Texture * ground = new ColorTexture(Color(149.0f/255.0f, 107.0f/255.0f, 8.0f/255.0f));
 	Plane* w1 = new  Plane(wall_m, wall_red, Vector3(0, 0, 0), Vector3(1, 0, 0),0);			//ÕýÃæ
-	Plane* w2 = new  Plane(wall_m, wall_bl, Vector3(0, 0, 0), Vector3(0, 1, 0),0);				//×ó±ß
-	Plane* w3 = new  Plane(groud_m, wall_white, Vector3(0, 0, 0), Vector3(0, 0, 1),0);				//µØ°å
-	Plane* w4 = new  Plane(wall_m, wall_bl, Vector3(1000,0, 0), Vector3(-1, 0, 0),1000);
-	Plane* w5 = new  Plane(wall_m, wall_yellow, Vector3(0, 1000, 0), Vector3(0, -1, 0),1000);		//ÓÒ±ß
+	Plane* w2 = new  Plane(wall_m, wall_yellow, Vector3(0, 0, 0), Vector3(0, 1, 0),0);				//×ó±ß
+	Plane* w3 = new  Plane(groud_m, ground, Vector3(0, 0, 0), Vector3(0, 0, 1),0);				//µØ°å
+	Plane* w4 = new  Plane(wall_m, wall_white, Vector3(1000,0, 0), Vector3(-1, 0, 0),1000);
+	Plane* w5 = new  Plane(wall_m, wall_bl, Vector3(0, 1000, 0), Vector3(0, -1, 0),1000);		//ÓÒ±ß
 	Plane* w6 = new  Plane(wall_m, wall_bl, Vector3(0, 0, 1000), Vector3(0, 0, -1),1000);			//Ìì»¨°å
 	Sphere* lightSource = new Sphere(new Meterial(0, 0, 0, 0),new ColorTexture(Color(1, 1, 1)), Vector3(100, 500, 1000),40.0);
 	lightSource->setAsLight(new Light(Vector3(500, 500, 1000),Color(1,1,1),5000,1));
