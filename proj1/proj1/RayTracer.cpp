@@ -133,12 +133,12 @@ Color RayTracer::trace(Ray* r,int depth,float length,float refract_idx,float &in
 				Color c_t = trace(new Ray(intersectPos + T * 0.001, T), depth + 1,length + inter->t, refract,inter_len);
 				Color absorbance = intersectColor * 0.0005f * (-inter_len);
 				Color transparency = Color(expf(absorbance.getX()), expf(absorbance.getY()), expf(absorbance.getZ()));
-				c += c_t* transparency;
-				if (c_t.getX() == 0.0f && c_t.getY() == 0.0f && c_t.getZ() == 0.0f) {
+				c += c_t;
+				/*if (c_t.getX() == 0.0f && c_t.getY() == 0.0f && c_t.getZ() == 0.0f) {
 					printf("%d ",depth);
 					intersectPos.show();
 					printf("\n");
-				}
+				}*/
 			}
 		}
 

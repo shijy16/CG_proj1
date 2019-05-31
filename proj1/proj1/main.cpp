@@ -9,7 +9,7 @@
 
 
 */
-float SIZE = 2;
+float SIZE = 1;
 int main(void){
 	time_t start, stop;
 	start = time(NULL);
@@ -25,9 +25,9 @@ int main(void){
 	ColorTexture* t2 = s.getColorTexture(Color((float)128 / (float)255, (float)0 / (float)255, (float)128 / (float)255));
 	o[0] = s.getSphere(m2, t2, Vector3(100 * SIZE, 550 * SIZE, 50 * SIZE), 50 * SIZE);
 
-	Meterial* m3 = s.getMeterial(0.0f, 0.8f, 0.0f, 0.6f);
-	ColorTexture* t3 = s.getColorTexture(Color((float)0 / (float)255, (float)255 / (float)255, (float)255 / (float)255));
-	o[2] = s.getSphere(m3, t3, Vector3(150 * SIZE, 200 * SIZE, 100 * SIZE), 100 * SIZE);
+	Meterial* m3 = s.getMeterial(0.0f, 1.33f, 0.0f, 0.6f);
+	ColorTexture* t3 = s.getColorTexture(Color((float)255 / (float)255, (float)255 / (float)255, (float)255 / (float)255));
+	o[2] = s.getSphere(m3, t3, Vector3(250 * SIZE, 500 * SIZE, 300 * SIZE), 100 * SIZE);
 
 	Builder* b = new Builder();
 	b->buildCamera(Vector3(600 * SIZE, 500 * SIZE, 400 * SIZE), Vector3(400 * SIZE, 200 * SIZE, 100 * SIZE), Vector3(0, 0,1), Vector3(0, 1, 0),600 * SIZE,600 * SIZE);
