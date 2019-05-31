@@ -50,6 +50,7 @@ Color ColorTexture::getColor(float x, float y, bool sphere) {
 /******************    Plane   **********************/
 /*****************************************************/
 Plane::Plane(Meterial* m, Texture* t,Vector3 _P, Vector3 _n, float _D) :P(_P),n(_n), D(_D) {
+	type = PLANE;
 	objMeterial = m;
 	objTexture = t;
 	if (n.getX() == 0.0f) {
@@ -96,6 +97,7 @@ Vector3 Plane::getNormal(Vector3 pos) {
 /******************    Sphere  **********************/
 /****************************************************/
 Sphere::Sphere(Meterial* m, Texture* t, Vector3 _P, float _r) :P(_P), r(_r) {
+	type = SPHERE;
 	objMeterial = m;
 	objTexture = t;
 }

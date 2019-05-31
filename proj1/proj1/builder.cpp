@@ -24,8 +24,10 @@ void Builder::buildScene(Object** objs, int num, float SIZE) {
 	Plane* w4 = new  Plane(wall_m, wall_white, Vector3(1000*SIZE,0, 0), Vector3(-1, 0, 0),1000*SIZE);
 	Plane* w5 = new  Plane(wall_m, wall_bl, Vector3(0, 1000*SIZE, 0), Vector3(0, -1, 0),1000*SIZE);		//ÓÒ±ß
 	Plane* w6 = new  Plane(wall_m, wall_bl, Vector3(0, 0, 1000*SIZE), Vector3(0, 0, -1),1000*SIZE);			//Ìì»¨°å
-	Sphere* lightSource = new Sphere(new Meterial(0, 0, 0, 0),new ColorTexture(Color(1, 1, 1)), Vector3(200* SIZE, 500*SIZE, 1000*SIZE),40.0);
-	lightSource->setAsLight(new Light(Vector3(500, 500, 1000*SIZE),Color(1,1,1),5000,1));
+	Sphere* lightSource = new Sphere(new Meterial(0, 0, 0, 0),new ColorTexture(Color(1, 1, 1)), Vector3(200* SIZE, 500*SIZE, 999*SIZE),40.0);
+	//Sphere* lightSource2 = new Sphere(new Meterial(0, 0, 0, 0), new ColorTexture(Color(1, 1, 1)), Vector3(200 * SIZE, 100 * SIZE, 200 * SIZE), 40.0);
+	lightSource->setAsLight(new Light(Vector3(200*SIZE, 500*SIZE, 999*SIZE),Color(1,1,1),5000,1));
+	//lightSource2->setAsLight(new Light(Vector3(200*SIZE, 100*SIZE, 200 * SIZE), Color(1, 1, 1), 5000, 1));
 	scene->addObj(w1);
 	scene->addObj(w2);
 	scene->addObj(w3);
@@ -33,6 +35,7 @@ void Builder::buildScene(Object** objs, int num, float SIZE) {
 	scene->addObj(w5);
 	scene->addObj(w6);
 	scene->addObj(lightSource);
+	//scene->addObj(lightSource2);
 }
 
 cv::Mat Builder::rayTracer_begin() {

@@ -9,7 +9,7 @@
 
 
 */
-float SIZE = 2;
+float SIZE = 1;
 int main(void){
 	time_t start, stop;
 	start = time(NULL);

@@ -10,7 +10,7 @@ void RayTracer::writeImg() {
 	time(&now);
 	localtime_s(&t, &now);
 	char* date = new char[20];
-	sprintf_s(date, 20, "%d%.2d%d.png", t.tm_year + 1900, t.tm_mon + 1, t.tm_mday);
+	sprintf_s(date, 20, "result/%d%.2d%d.png", t.tm_year + 1900, t.tm_mon + 1, t.tm_mday);
 	cv::imwrite(std::string(date), result);
 }
 
@@ -59,30 +59,47 @@ Color RayTracer::trace(Ray* r,float depth) {
 			Object* obj = scene->getObj(i);
 			if (obj->isLight()) {
 				Vector3 L = obj->getLightCenter() - intersectPos;	//交点到光源
-				L.normalize();
 				N.normalize();
+
+				//点光源产生阴影
+				float shadow = 1.0;
+				if (obj->getType() == Object::SPHERE) {
+					float L_len = L.getLength();
+					L.normalize();
+					Ray* inter2plight = new Ray(intersectPos + 0.01*L, L);
+					for (int j = 0; j < scene->getObjCnt(); j++) {
+						if (j == i) continue;
+						float t = scene->getObj(j)->intersect(*inter2plight);
+						//被遮挡
+						if (t > 0.0f && t < L_len) {
+							shadow = 0.0f;
+							break;
+						}
+					}
+				}
+
+
 				if (diffuse > 0) {
 					float dot = Vector3::dot(N,L);
 					if (dot > 0) {
 						//漫反射
-						float diff = dot * diffuse;
+						float diff = dot * diffuse*shadow;
 						obj->getColor(obj->getLightCenter());
 						c += Vector3::mul(obj->getColor(obj->getLightCenter()),intersectObj->getColor(intersectPos))*diff;
-						//specular
-
-					
 					}
 				}
-				//光漫反射遇到光源后的光晕
+
+				//光源在物体上漫反射产生光晕
 				if (specular > 0.0f) {
 					//光源在物体表面反射光线
 					Vector3 rf_l = L - N * (Vector3::dot(L, N))*2.0f;
 					float dot = Vector3::dot(rf_l, r->dir);
 					if (dot > 0) {
-						float t = powf(dot, 20)*specular;
+						float t = powf(dot, 20)*specular*shadow;
 						c += t * obj->getColor(obj->getLightCenter());
 					}
 				}
+
 			}
 		}
 		if (reflect > 0.0f) {

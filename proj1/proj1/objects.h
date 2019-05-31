@@ -61,12 +61,17 @@ class Object {
 protected:
 	Meterial* objMeterial;
 	Texture* objTexture;
-	std::string name;
+	//std::string name;
 	bool light = false;
+	int type;
 	Light* l;
 public:
+	const static int PLANE = 1;
+	const static int SPHERE = 2;
+	const static int BEZEIER = 3;
 	Object(){}
-	std::string getName() { return name; }
+	int getType() { return type; }
+	//std::string getName() { return name; }
 	float getReflect() { return objMeterial->reflect; }
 	float getRefract() { return objMeterial->refract; }
 	float getDiffuse() { return objMeterial->diffuse; }
