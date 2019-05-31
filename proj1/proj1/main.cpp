@@ -13,16 +13,19 @@ int main(void){
 	time_t start, stop;
 	start = time(NULL);
 	Scene s = Scene();
-	Meterial* m = s.getMeterial(0.4f, 0.2, 0.7, 0.6);
 	Object** o;
 	o = new Object*[10];
 
-	ColorTexture* tt = s.getColorTexture(Color((float)192 / (float)255, (float)192 / (float)255, (float)192 / (float)255));
-	o[0] = s.getSphere(m, tt, Vector3(100, 550, 50), 50);
+	Meterial* m1 = s.getMeterial(1.0f, 0.2, 0.0f, 0.6);
+	ColorTexture* t1 = s.getColorTexture(Color((float)192 / (float)255, (float)192 / (float)255, (float)192 / (float)255));
+	o[1] = s.getSphere(m1, t1, Vector3(150, 400, 100), 100);
+
+	Meterial* m2 = s.getMeterial(0.0f, 0.2, 1.0f, 0.6);
+	ColorTexture* t2 = s.getColorTexture(Color((float)128 / (float)255, (float)0 / (float)255, (float)128 / (float)255));
+	o[0] = s.getSphere(m2, t2, Vector3(100, 550, 50), 50);
 
 
 //	Texture* t = s.getPicTexture("texture.png");
-	o[1] = s.getSphere(m, tt, Vector3(150, 400, 100), 100);
 
 
 	Builder* b = new Builder();
