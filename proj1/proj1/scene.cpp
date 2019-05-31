@@ -62,14 +62,15 @@ IntersectPoint* Scene::getIntersectObj(Ray &r) {
 	IntersectPoint* res = NULL;
 	float t = 10000;
 	for (int i = 0; i < objCnt; i++) {
-		float dis = objs[i]->intersect(r);
+		bool inside = false;
+		float dis = objs[i]->intersect(r, inside);
 		if ( dis > 0 && dis < t ) {
 			t = dis;
 			if (res) {
 				res->set(objs[i], t);
 			}
 			else {
-				res = new IntersectPoint(objs[i], t);
+				res = new IntersectPoint(objs[i], t,inside);
 			}
 		}
 	}

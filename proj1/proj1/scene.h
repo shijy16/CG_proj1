@@ -5,9 +5,9 @@
 struct IntersectPoint {
 	Object* obj;
 	float t;
-
+	bool inside;
 	IntersectPoint(){}
-	IntersectPoint(Object* o,float _t):obj(o),t(_t){}
+	IntersectPoint(Object* o,float _t,bool in):obj(o),t(_t),inside(in){}
 	void set(Object* o, float _t) { obj = o; t = _t; }
 };
 

@@ -23,19 +23,21 @@ void RayTracer::run() {
 		printf("%.2lf%%\r", i * 100.0 / imgHeight);
 		for (int j = 0; j < imgWidth; j++) {
 			Ray* r = camera->getCameraRay(i, j);
-			Color c = trace(r,0);
-			result.at<cv::Vec3b>(imgHeight - i - 1, j)[0] = int(c.getZ()*255) > 255 ? 255 : int(c.getZ() * 255);
-			result.at<cv::Vec3b>(imgHeight - i - 1, j)[1] = int(c.getY()*255) > 255 ? 255 : int(c.getY() * 255);
-			result.at<cv::Vec3b>(imgHeight - i - 1, j)[2] = int(c.getX()*255) > 255 ? 255 : int(c.getX() * 255);
+			float a = 0.0;
+			Color c = trace(r,0,0,1.0f,a);
+			result.at<cv::Vec3b>(imgHeight - i - 1, j)[0] = (int(c.getZ()*255) > 255 ? 255 : int(c.getZ() * 255));
+			result.at<cv::Vec3b>(imgHeight - i - 1, j)[1] = (int(c.getY()*255) > 255 ? 255 : int(c.getY() * 255));
+			result.at<cv::Vec3b>(imgHeight - i - 1, j)[2] = (int(c.getX()*255) > 255 ? 255 : int(c.getX() * 255));
 		}
 	}
 	showImg();
 	writeImg();
 }
 
-Color RayTracer::trace(Ray* r,float depth) {
+Color RayTracer::trace(Ray* r,int depth,float length,float refract_idx,float &inter_l) {
 	if (depth > MAX_DEPTH) return Color(0, 0, 0);
-
+	if(length > MAX_LIGHT_LEN) return Color(0, 0, 0);
+	inter_l = 100000.0f;
 	IntersectPoint* inter = scene->getIntersectObj(*r);
 	if (inter == NULL) {
 		return Color(0, 0, 0);
@@ -43,11 +45,13 @@ Color RayTracer::trace(Ray* r,float depth) {
 
 	Object* intersectObj = inter->obj;
 	float intersectT = inter->t;
+	inter_l = intersectT;
 	Vector3 intersectPos = r->o + r->dir*intersectT;
 	float reflect = intersectObj->getReflect();
 	float refract = intersectObj->getRefract();
 	float diffuse = intersectObj->getDiffuse();
 	float specular = intersectObj->getSpecular();
+	bool isInsideObj = inter->inside;
 	Vector3 N = intersectObj->getNormal(intersectPos);	//交点法向量
 	Color intersectColor = intersectObj->getColor(intersectPos);
 	if (intersectObj->isLight()) {
@@ -69,7 +73,8 @@ Color RayTracer::trace(Ray* r,float depth) {
 					Ray* inter2plight = new Ray(intersectPos + 0.01*L, L);
 					for (int j = 0; j < scene->getObjCnt(); j++) {
 						if (j == i) continue;
-						float t = scene->getObj(j)->intersect(*inter2plight);
+						bool in;
+						float t = scene->getObj(j)->intersect(*inter2plight,in);
 						//被遮挡
 						if (t > 0.0f && t < L_len) {
 							shadow = 0.0f;
@@ -77,12 +82,12 @@ Color RayTracer::trace(Ray* r,float depth) {
 						}
 					}
 				}
+				if (shadow <= 0.0f) continue;
 
-
+				//漫反射
 				if (diffuse > 0) {
 					float dot = Vector3::dot(N,L);
 					if (dot > 0) {
-						//漫反射
 						float diff = dot * diffuse*shadow;
 						obj->getColor(obj->getLightCenter());
 						c += Vector3::mul(obj->getColor(obj->getLightCenter()),intersectObj->getColor(intersectPos))*diff;
@@ -105,7 +110,8 @@ Color RayTracer::trace(Ray* r,float depth) {
 		if (reflect > 0.0f) {
 			Vector3 rf_light = r->dir - N*(Vector3::dot(r->dir,N))*2.0f;		//光碰到物体后反射
 			rf_light.normalize();
-			Color t = trace(new Ray(intersectPos + rf_light * 0.01f, rf_light),depth + 1);
+			float a = 0.0f;
+			Color t = trace(new Ray(intersectPos + rf_light * 0.01f, rf_light),depth + 1,length + inter->t,refract,a);
 			c += Vector3::mul(t,intersectColor)*reflect;	//反射光线出发点是物体外一点点
 			/*if (t.getX() > 0.0f) {
 				t.show();
@@ -113,6 +119,27 @@ Color RayTracer::trace(Ray* r,float depth) {
 				c.show();
 				printf("\n");
 			}*/
+		}
+
+		//折射
+		if (refract > 0.0f) {
+			float n = refract_idx / refract;
+			if (isInsideObj) N = N*(-1.0f);		//在物体内部
+			float cosI = -Vector3::dot(N,r->dir);
+			float cosT2 = 1.0f - n * n * (1.0f - cosI * cosI);
+			if (cosT2 > 0.0f){
+				Vector3 T = (n * r->dir) + (n * cosI - sqrtf(cosT2)) * N;
+				float inter_len = 10000.0;
+				Color c_t = trace(new Ray(intersectPos + T * 0.001, T), depth + 1,length + inter->t, refract,inter_len);
+				Color absorbance = intersectColor * 0.0005f * (-inter_len);
+				Color transparency = Color(expf(absorbance.getX()), expf(absorbance.getY()), expf(absorbance.getZ()));
+				c += c_t* transparency;
+				if (c_t.getX() == 0.0f && c_t.getY() == 0.0f && c_t.getZ() == 0.0f) {
+					printf("%d ",depth);
+					intersectPos.show();
+					printf("\n");
+				}
+			}
 		}
 
 		return c;

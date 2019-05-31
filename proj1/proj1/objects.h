@@ -81,7 +81,7 @@ public:
 	void setAsLight() { light = true; l = new Light(); }
 	void setAsLight(float brightness) { light = true; l = new Light(); l->brightness = brightness; }
 	virtual Color getColor(Vector3 &pos) = 0;
-	virtual float intersect(Ray &r) = 0;
+	virtual float intersect(Ray &r,bool &inside) = 0;
 	virtual Vector3 getLightCenter() { return Vector3(); }
 	virtual Vector3 getNormal(Vector3 pos) = 0;
 };
@@ -96,7 +96,7 @@ private:
 public:
 	Plane(Meterial* m, Texture* t, Vector3 _P, Vector3 _n, float _D);
 	Color getColor(Vector3 &pos);
-	float intersect(Ray &r);
+	float intersect(Ray &r, bool &inside);
 	Vector3 getLightCenter();
 	Vector3 getNormal(Vector3 pos);
 };
@@ -108,7 +108,7 @@ private:
 public:
 	Sphere(Meterial* m, Texture* t, Vector3 _P, float _r);
 	Color getColor(Vector3 &pos);
-	float intersect(Ray &r);
+	float intersect(Ray &r, bool &inside);
 	Vector3 getLightCenter();
 	Vector3 getNormal(Vector3 pos);
 };

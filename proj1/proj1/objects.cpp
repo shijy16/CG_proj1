@@ -66,7 +66,8 @@ Plane::Plane(Meterial* m, Texture* t,Vector3 _P, Vector3 _n, float _D) :P(_P),n(
 	}
 }
 
-float Plane::intersect(Ray &r) {
+float Plane::intersect(Ray &r, bool &inside) {
+	inside = false;
 	float deno = Vector3::dot(r.dir,n);
 	if (deno == 0.0f) return -1;
 	float res = -(D + Vector3::dot(n,r.o));
@@ -113,7 +114,8 @@ Color Sphere::getColor(Vector3 &pos) {
 	}
 }
 
-float Sphere::intersect(Ray &ray) {
+float Sphere::intersect(Ray &ray, bool &inside) {
+	inside = false;
 	Vector3 l = P - ray.o;
 	float tp = Vector3::dot(l,ray.dir);
 	float ll = Vector3::dot(l, l);
@@ -130,6 +132,7 @@ float Sphere::intersect(Ray &ray) {
 		return tp - t_;
 	}
 	else {
+		inside = true;
 		return tp + t_;
 	}
 	return -1;

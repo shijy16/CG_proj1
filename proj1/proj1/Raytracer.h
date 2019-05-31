@@ -12,15 +12,15 @@ private:
 	cv::Mat result;
 	int imgHeight;
 	int imgWidth;
-	float maxLightLen = 1000000;
-	float MAX_DEPTH = 15;
+	float MAX_LIGHT_LEN = 1000000;
+	int MAX_DEPTH = 25;
 public:
 	RayTracer(Camera* c,Scene* s,int height,int width):camera(c),scene(s),imgHeight(height),imgWidth(width){}
 	cv::Mat getImg() { return result; }
 	void showImg();
 	void writeImg();
 
-	Color trace(Ray* r,float length);
+	Color trace(Ray* r,int depth,float length,float refract_idx,float& inter_l);
 	void run();
 };
 
