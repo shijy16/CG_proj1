@@ -13,7 +13,7 @@ private:
 	int imgHeight;
 	int imgWidth;
 	float maxLightLen = 1000000;
-	float MAX_DEPTH = 1;
+	float MAX_DEPTH = 15;
 public:
 	RayTracer(Camera* c,Scene* s,int height,int width):camera(c),scene(s),imgHeight(height),imgWidth(width){}
 	cv::Mat getImg() { return result; }

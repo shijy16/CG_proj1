@@ -52,9 +52,9 @@ Color ColorTexture::getColor(float x, float y, bool sphere) {
 Plane::Plane(Meterial* m, Texture* t,Vector3 _P, Vector3 _n, float _D) :P(_P),n(_n), D(_D) {
 	objMeterial = m;
 	objTexture = t;
-	if (n.getX() == 0) {
+	if (n.getX() == 0.0f) {
 		dx = Vector3(1, 0, 0);
-		if (n.getY() == 0) {
+		if (n.getY() == 0.0f) {
 			dy = Vector3(0, 1, 0);
 		}else {
 			dy = Vector3(0, 0, 1);
@@ -67,10 +67,10 @@ Plane::Plane(Meterial* m, Texture* t,Vector3 _P, Vector3 _n, float _D) :P(_P),n(
 
 float Plane::intersect(Ray &r) {
 	float deno = Vector3::dot(r.dir,n);
-	if (deno == 0) return -1;
+	if (deno == 0.0f) return -1;
 	float res = -(D + Vector3::dot(n,r.o));
 	res /= deno;
-	if (res > 0) return res;
+	if (res > 0.0f) return res;
 	else return -1;
 }
 

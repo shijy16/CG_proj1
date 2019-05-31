@@ -24,9 +24,9 @@ void RayTracer::run() {
 		for (int j = 0; j < imgWidth; j++) {
 			Ray* r = camera->getCameraRay(i, j);
 			Color c = trace(r,0);
-			result.at<cv::Vec3b>(imgHeight - i - 1, j)[0] = int(c.getZ()*255);
-			result.at<cv::Vec3b>(imgHeight - i - 1, j)[1] = int(c.getY()*255);
-			result.at<cv::Vec3b>(imgHeight - i - 1, j)[2] = int(c.getX()*255);
+			result.at<cv::Vec3b>(imgHeight - i - 1, j)[0] = int(c.getZ()*255) > 255 ? 255 : int(c.getZ() * 255);
+			result.at<cv::Vec3b>(imgHeight - i - 1, j)[1] = int(c.getY()*255) > 255 ? 255 : int(c.getY() * 255);
+			result.at<cv::Vec3b>(imgHeight - i - 1, j)[2] = int(c.getX()*255) > 255 ? 255 : int(c.getX() * 255);
 		}
 	}
 	showImg();
@@ -77,7 +77,14 @@ Color RayTracer::trace(Ray* r,float depth) {
 		if (reflect > 0.0f) {
 			Vector3 rf_light = r->dir - N*(Vector3::dot(r->dir,N))*2.0f;		//反射光线
 			rf_light.normalize();
-			c += Vector3::mul(trace(new Ray(intersectPos + rf_light*0.01, rf_light), depth + 1),intersectColor)*reflect;	//反射光线出发点是物体外一点点
+			Color t = trace(new Ray(intersectPos + rf_light * 0.01f, rf_light),depth + 1);
+			c += Vector3::mul(t,intersectColor)*reflect;	//反射光线出发点是物体外一点点
+			/*if (t.getX() > 0.0f) {
+				t.show();
+				printf("\t");
+				c.show();
+				printf("\n");
+			}*/
 		}
 
 		return c;
