@@ -4,7 +4,7 @@ void Builder::buildCamera(Vector3 eye, Vector3 origin, Vector3 dx, Vector3 dy,in
 	camera = new Camera(eye, origin, dx, dy,x,y);
 }
 
-void Builder::buildScene(Object** objs, int num) {
+void Builder::buildScene(Object** objs, int num, float SIZE) {
 	scene = new Scene();
 	for (int i = 0; i < num; i++) {
 		scene->addObj(objs[i]);
@@ -21,11 +21,11 @@ void Builder::buildScene(Object** objs, int num) {
 	Plane* w1 = new  Plane(wall_m, wall_red, Vector3(0, 0, 0), Vector3(1, 0, 0),0);			//正面
 	Plane* w2 = new  Plane(wall_m, wall_yellow, Vector3(0, 0, 0), Vector3(0, 1, 0),0);				//左边
 	Plane* w3 = new  Plane(groud_m, ground, Vector3(0, 0, 0), Vector3(0, 0, 1),0);				//地板
-	Plane* w4 = new  Plane(wall_m, wall_white, Vector3(1000,0, 0), Vector3(-1, 0, 0),1000);
-	Plane* w5 = new  Plane(wall_m, wall_bl, Vector3(0, 1000, 0), Vector3(0, -1, 0),1000);		//右边
-	Plane* w6 = new  Plane(wall_m, wall_bl, Vector3(0, 0, 1000), Vector3(0, 0, -1),1000);			//天花板
-	Sphere* lightSource = new Sphere(new Meterial(0, 0, 0, 0),new ColorTexture(Color(1, 1, 1)), Vector3(100, 500, 1000),40.0);
-	lightSource->setAsLight(new Light(Vector3(500, 500, 1000),Color(1,1,1),5000,1));
+	Plane* w4 = new  Plane(wall_m, wall_white, Vector3(1000*SIZE,0, 0), Vector3(-1, 0, 0),1000*SIZE);
+	Plane* w5 = new  Plane(wall_m, wall_bl, Vector3(0, 1000*SIZE, 0), Vector3(0, -1, 0),1000*SIZE);		//右边
+	Plane* w6 = new  Plane(wall_m, wall_bl, Vector3(0, 0, 1000*SIZE), Vector3(0, 0, -1),1000*SIZE);			//天花板
+	Sphere* lightSource = new Sphere(new Meterial(0, 0, 0, 0),new ColorTexture(Color(1, 1, 1)), Vector3(200* SIZE, 500*SIZE, 1000*SIZE),40.0);
+	lightSource->setAsLight(new Light(Vector3(500, 500, 1000*SIZE),Color(1,1,1),5000,1));
 	scene->addObj(w1);
 	scene->addObj(w2);
 	scene->addObj(w3);

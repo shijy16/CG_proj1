@@ -68,14 +68,25 @@ Color RayTracer::trace(Ray* r,float depth) {
 						float diff = dot * diffuse;
 						obj->getColor(obj->getLightCenter());
 						c += Vector3::mul(obj->getColor(obj->getLightCenter()),intersectObj->getColor(intersectPos))*diff;
+						//specular
+
 					
 					}
-
+				}
+				//光漫反射遇到光源后的光晕
+				if (specular > 0.0f) {
+					//光源在物体表面反射光线
+					Vector3 rf_l = L - N * (Vector3::dot(L, N))*2.0f;
+					float dot = Vector3::dot(rf_l, r->dir);
+					if (dot > 0) {
+						float t = powf(dot, 20)*specular;
+						c += t * obj->getColor(obj->getLightCenter());
+					}
 				}
 			}
 		}
 		if (reflect > 0.0f) {
-			Vector3 rf_light = r->dir - N*(Vector3::dot(r->dir,N))*2.0f;		//反射光线
+			Vector3 rf_light = r->dir - N*(Vector3::dot(r->dir,N))*2.0f;		//光碰到物体后反射
 			rf_light.normalize();
 			Color t = trace(new Ray(intersectPos + rf_light * 0.01f, rf_light),depth + 1);
 			c += Vector3::mul(t,intersectColor)*reflect;	//反射光线出发点是物体外一点点

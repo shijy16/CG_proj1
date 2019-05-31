@@ -9,6 +9,7 @@
 
 
 */
+float SIZE = 2;
 int main(void){
 	time_t start, stop;
 	start = time(NULL);
@@ -18,19 +19,17 @@ int main(void){
 
 	Meterial* m1 = s.getMeterial(1.0f, 0.2, 0.0f, 0.6);
 	ColorTexture* t1 = s.getColorTexture(Color((float)192 / (float)255, (float)192 / (float)255, (float)192 / (float)255));
-	o[1] = s.getSphere(m1, t1, Vector3(150, 400, 100), 100);
+	o[1] = s.getSphere(m1, t1, Vector3(150* SIZE, 400 * SIZE, 100 * SIZE), 100 * SIZE);
 
 	Meterial* m2 = s.getMeterial(0.0f, 0.2, 1.0f, 0.6);
 	ColorTexture* t2 = s.getColorTexture(Color((float)128 / (float)255, (float)0 / (float)255, (float)128 / (float)255));
-	o[0] = s.getSphere(m2, t2, Vector3(100, 550, 50), 50);
+	o[0] = s.getSphere(m2, t2, Vector3(100 * SIZE, 550 * SIZE, 50 * SIZE), 50 * SIZE);
 
-
-//	Texture* t = s.getPicTexture("texture.png");
 
 
 	Builder* b = new Builder();
-	b->buildCamera(Vector3(600, 500, 500), Vector3(400, 200, 200), Vector3(0, 0,1), Vector3(0, 1, 0),600,600);
-	b->buildScene(o, 2);
+	b->buildCamera(Vector3(600 * SIZE, 500 * SIZE, 400 * SIZE), Vector3(400 * SIZE, 200 * SIZE, 100 * SIZE), Vector3(0, 0,1), Vector3(0, 1, 0),600 * SIZE,600 * SIZE);
+	b->buildScene(o, 2, SIZE);
 	b->rayTracer_begin();
 	stop = time(NULL);
 	printf("Used Time:%ld\n", (stop - start));

@@ -10,7 +10,7 @@ class Builder {
 public:
 	Builder(){}
 	void buildCamera(Vector3 eye, Vector3 origin, Vector3 dx, Vector3 dy, int x, int y);
-	void buildScene(Object** objs, int num);
+	void buildScene(Object** objs, int num, float SIZE);
 	cv::Mat rayTracer_begin();
 };
 
