@@ -15,31 +15,53 @@ void RayTracer::writeImg() {
 }
 
 void RayTracer::run() {
-	printf("RayRtacer begin\n");
+	printf("RayTracer begin\n");
 	result = cv::Mat::zeros(imgWidth, imgHeight,CV_8UC3);
-#pragma omp parallel
-#pragma omp for schedule(dynamic,2)
+	int last_obj = -1;
+	int cur_obj = -1;
+//#pragma omp parallel
+//#pragma omp for schedule(dynamic,2)
 	for (int i = 0; i < imgHeight; i++) {
 		printf("%.2lf%%\r", i * 100.0 / imgHeight);
 		for (int j = 0; j < imgWidth; j++) {
 			Ray* r = camera->getCameraRay(i, j);
 			float a = 0.0;
-			Color c = trace(r,0,0,1.0f,a);
-			result.at<cv::Vec3b>(imgHeight - i - 1, j)[0] = (int(c.getZ()*255) > 255 ? 255 : int(c.getZ() * 255));
-			result.at<cv::Vec3b>(imgHeight - i - 1, j)[1] = (int(c.getY()*255) > 255 ? 255 : int(c.getY() * 255));
-			result.at<cv::Vec3b>(imgHeight - i - 1, j)[2] = (int(c.getX()*255) > 255 ? 255 : int(c.getX() * 255));
+			Color c = trace(r,0,0,1.0f,a, cur_obj);
+			free(r);
+			//边缘超采样
+			if (cur_obj != last_obj) {
+				//printf("ohhh\n");
+				last_obj = cur_obj;
+				c = Color(0, 0, 0);
+				#pragma omp parallel
+				#pragma omp for schedule(dynamic,1)
+				for (int tx = -10; tx < 11; tx++) {
+					for (int ty = -10; ty < 11; ty++) {
+						Ray* tr = camera->getCameraRay(float(i) + float(tx) / 20.0f, float(j) + float(ty) / 20.0f);
+						//tr->show();
+						c += trace(tr, 0, 0, 1.0f, a, cur_obj);
+						free(tr);
+					}
+				}
+				//printf("\n>>>>>>>>>>>\n");
+				c = c / (21.0f*21.0f);
+			}
+			result.at<cv::Vec3b>(imgHeight - i - 1, j)[0] = (int(c.getZ() * 255) > 255 ? 255 : int(c.getZ() * 255));
+			result.at<cv::Vec3b>(imgHeight - i - 1, j)[1] = (int(c.getY() * 255) > 255 ? 255 : int(c.getY() * 255));
+			result.at<cv::Vec3b>(imgHeight - i - 1, j)[2] = (int(c.getX() * 255) > 255 ? 255 : int(c.getX() * 255));
 		}
 	}
 	showImg();
 	writeImg();
 }
 
-Color RayTracer::trace(Ray* r,int depth,float length,float refract_idx,float &inter_l) {
+Color RayTracer::trace(Ray* r,int depth,float length,float refract_idx,float &inter_l,int &inter_id) {
 	if (depth > MAX_DEPTH) return Color(0, 0, 0);
 	if(length > MAX_LIGHT_LEN) return Color(0, 0, 0);
 	inter_l = 100000.0f;
 	IntersectPoint* inter = scene->getIntersectObj(*r);
 	if (inter == NULL) {
+		inter_id = -1;
 		return Color(0, 0, 0);
 	}
 
@@ -51,7 +73,9 @@ Color RayTracer::trace(Ray* r,int depth,float length,float refract_idx,float &in
 	float refract = intersectObj->getRefract();
 	float diffuse = intersectObj->getDiffuse();
 	float specular = intersectObj->getSpecular();
+	
 	bool isInsideObj = inter->inside;
+	inter_id = inter->obj_id;
 	Vector3 N = intersectObj->getNormal(intersectPos);	//交点法向量
 	Color intersectColor = intersectObj->getColor(intersectPos);
 	if (intersectObj->isLight()) {
@@ -111,7 +135,8 @@ Color RayTracer::trace(Ray* r,int depth,float length,float refract_idx,float &in
 			Vector3 rf_light = r->dir - N*(Vector3::dot(r->dir,N))*2.0f;		//光碰到物体后反射
 			rf_light.normalize();
 			float a = 0.0f;
-			Color t = trace(new Ray(intersectPos + rf_light * 0.01f, rf_light),depth + 1,length + inter->t,refract,a);
+			int temp = 0;
+			Color t = trace(new Ray(intersectPos + rf_light * 0.01f, rf_light),depth + 1,length + inter->t, refract_idx,a,temp);
 			c += Vector3::mul(t,intersectColor)*reflect;	//反射光线出发点是物体外一点点
 			/*if (t.getX() > 0.0f) {
 				t.show();
@@ -125,23 +150,19 @@ Color RayTracer::trace(Ray* r,int depth,float length,float refract_idx,float &in
 		if (refract > 0.0f) {
 			float n = refract_idx / refract;
 			if (isInsideObj) N = N*(-1.0f);		//在物体内部
-			float cosI = -Vector3::dot(N,r->dir);
+			float cosI = - Vector3::dot(N,r->dir);
 			float cosT2 = 1.0f - n * n * (1.0f - cosI * cosI);
 			if (cosT2 > 0.0f){
 				Vector3 T = (n * r->dir) + (n * cosI - sqrtf(cosT2)) * N;
 				float inter_len = 10000.0;
-				Color c_t = trace(new Ray(intersectPos + T * 0.001, T), depth + 1,length + inter->t, refract,inter_len);
+				int t = 0;
+				Color c_t = trace(new Ray(intersectPos + T * 0.001f, T), depth + 1,length + inter->t, refract,inter_len,t);
 				Color absorbance = intersectColor * 0.0005f * (-inter_len);
 				Color transparency = Color(expf(absorbance.getX()), expf(absorbance.getY()), expf(absorbance.getZ()));
-				c += c_t;
-				/*if (c_t.getX() == 0.0f && c_t.getY() == 0.0f && c_t.getZ() == 0.0f) {
-					printf("%d ",depth);
-					intersectPos.show();
-					printf("\n");
-				}*/
+				c += c_t* transparency;
 			}
 		}
-
+		free(inter);
 		return c;
 	}
 	

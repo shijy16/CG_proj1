@@ -67,10 +67,10 @@ IntersectPoint* Scene::getIntersectObj(Ray &r) {
 		if ( dis > 0 && dis < t ) {
 			t = dis;
 			if (res) {
-				res->set(objs[i], t);
+				res->set(objs[i], t, inside,i);
 			}
 			else {
-				res = new IntersectPoint(objs[i], t,inside);
+				res = new IntersectPoint(objs[i], t,inside,i);
 			}
 		}
 	}

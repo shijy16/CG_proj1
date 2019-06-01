@@ -17,8 +17,9 @@ void Builder::buildScene(Object** objs, int num, float SIZE) {
 	Texture* wall_bl = new ColorTexture(Color(0, 1, 1));
 	Texture* wall_white = new ColorTexture(Color(1, 1, 1));
 	Texture* ground = new PicTexture("floor1.bmp");
+	Texture* wall_paper = new PicTexture("texture.png");
 	//Texture * ground = new ColorTexture(Color(149.0f/255.0f, 107.0f/255.0f, 8.0f/255.0f));
-	Plane* w1 = new  Plane(wall_m, wall_red, Vector3(0, 0, 0), Vector3(1, 0, 0),0);			//正面
+	Plane* w1 = new  Plane(wall_m, wall_paper, Vector3(0, 0, 0), Vector3(1, 0, 0),0);			//正面
 	Plane* w2 = new  Plane(wall_m, wall_yellow, Vector3(0, 0, 0), Vector3(0, 1, 0),0);				//左边
 	Plane* w3 = new  Plane(groud_m, ground, Vector3(0, 0, 0), Vector3(0, 0, 1),0);				//地板
 	Plane* w4 = new  Plane(wall_m, wall_white, Vector3(1000*SIZE,0, 0), Vector3(-1, 0, 0),1000*SIZE);

@@ -74,6 +74,9 @@ class Vector3{
 		friend Vector3 operator / (Vector3 v1,Vector3 v2){
 			return Vector3::sub(v1,v2);
 		}	
+		friend Vector3 operator / (Vector3 v1, float f) {
+			return Vector3(v1.x /= f,v1.y /= f,v1.z /= f);
+		}
 
 
 };
