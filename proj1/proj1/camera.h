@@ -16,8 +16,8 @@ public:
 		/*dx.normalize();
 		dy.normalize();*/
 	}
-	Ray* getCameraRay(int x, int y) {
-		Vector3 p = planeOrigin + dx*float(x) + dy*float(y);
+	Ray* getCameraRay(float x, float y) {
+		Vector3 p = planeOrigin + dx * x + dy * y;
 		Vector3 dir = p - eye;
 		return new Ray(eye, dir);
 	}

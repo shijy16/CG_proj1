@@ -5,10 +5,11 @@
 struct IntersectPoint {
 	Object* obj;
 	float t;
-
+	int obj_id;
+	bool inside;
 	IntersectPoint(){}
-	IntersectPoint(Object* o,float _t):obj(o),t(_t){}
-	void set(Object* o, float _t) { obj = o; t = _t; }
+	IntersectPoint(Object* o,float _t,bool in,int id):obj(o),t(_t),inside(in),obj_id(id){}
+	void set(Object* o, float _t, bool in, int id) { obj = o; t = _t; inside = in; id = obj_id; }
 };
 
 class Scene {
