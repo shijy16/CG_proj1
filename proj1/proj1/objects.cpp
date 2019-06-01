@@ -145,3 +145,20 @@ Vector3 Sphere::getLightCenter() {
 Vector3 Sphere::getNormal(Vector3 pos) {
 	return (pos - P)*r;
 }
+
+
+float Area::intersect(Ray &r, bool &inside) {
+	inside = false;
+	r.dir.normalize();
+	Vector3 N = Vector3::cross(Dx, Dy);
+	N.normalize();
+	float d = Vector3::dot(N, r.dir);
+	if (fabs(d) < 0.001) return -1;
+	float l = Vector3::dot(N * Vector3::dot(O, N) - r.o, N) / d;
+	if (l < 0.001) return -1;
+
+	Vector3 C = r.o + r.dir*l - O;
+	if (fabs(Vector3::dot(C, Dx)) > Vector3::dot(Dx, Dx)) return -1.0;
+	if (fabs(Vector3::dot(C, Dy)) > Vector3::dot(Dy, Dy)) return -1.0;
+	return l;
+}

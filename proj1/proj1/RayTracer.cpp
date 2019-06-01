@@ -14,6 +14,7 @@ void RayTracer::writeImg() {
 	cv::imwrite(std::string(date), result);
 }
 
+
 void RayTracer::run() {
 	printf("RayTracer begin\n");
 	result = cv::Mat::zeros(imgWidth, imgHeight,CV_8UC3);
@@ -21,9 +22,9 @@ void RayTracer::run() {
 	int cur_obj = -1;
 //#pragma omp parallel
 //#pragma omp for schedule(dynamic,2)
-	for (int i = 0; i < imgHeight; i++) {
-		printf("%.2lf%%\r", i * 100.0 / imgHeight);
-		for (int j = 0; j < imgWidth; j++) {
+	for (int i = 0; i < imgWidth; i++) {
+		printf("%.2lf%%\r", i * 100.0 / imgWidth);
+		for (int j = 0; j < imgHeight; j++) {
 			Ray* r = camera->getCameraRay(i, j);
 			float a = 0.0;
 			Color c = trace(r,0,0,1.0f,a, cur_obj);
@@ -46,13 +47,38 @@ void RayTracer::run() {
 				//printf("\n>>>>>>>>>>>\n");
 				c = c / (21.0f*21.0f);
 			}
-			result.at<cv::Vec3b>(imgHeight - i - 1, j)[0] = (int(c.getZ() * 255) > 255 ? 255 : int(c.getZ() * 255));
-			result.at<cv::Vec3b>(imgHeight - i - 1, j)[1] = (int(c.getY() * 255) > 255 ? 255 : int(c.getY() * 255));
-			result.at<cv::Vec3b>(imgHeight - i - 1, j)[2] = (int(c.getX() * 255) > 255 ? 255 : int(c.getX() * 255));
+			result.at<cv::Vec3b>(imgWidth - i - 1, j)[0] = (int(c.getZ() * 255) > 255 ? 255 : int(c.getZ() * 255));
+			result.at<cv::Vec3b>(imgWidth - i - 1, j)[1] = (int(c.getY() * 255) > 255 ? 255 : int(c.getY() * 255));
+			result.at<cv::Vec3b>(imgWidth - i - 1, j)[2] = (int(c.getX() * 255) > 255 ? 255 : int(c.getX() * 255));
 		}
 	}
 	showImg();
 	writeImg();
+}
+
+float RayTracer::get_shadow(Object* obj, Vector3 intersectPos, int i, Vector3& L) {
+	//点光源产生阴影
+	float shadow = 1.0;
+	if (obj->getType() == Object::SPHERE) {
+		float L_len = L.getLength();
+		L.normalize();
+		Ray* inter2plight = new Ray(intersectPos + 0.01*L, L);
+		for (int j = 0; j < scene->getObjCnt(); j++) {
+			if (j == i) continue;
+			bool in;
+			float t = scene->getObj(j)->intersect(*inter2plight, in);
+			//被遮挡
+			if (t > 0.0f && t < L_len) {
+				shadow = 0.0f;
+			}
+		}
+	}
+	else if (obj->getType() == Object::AREA) {
+		L.normalize();
+		//shadow = 0.0f;
+		//printf(">>>>>>>>>>>>>>");
+	}
+	return shadow;
 }
 
 Color RayTracer::trace(Ray* r,int depth,float length,float refract_idx,float &inter_l,int &inter_id) {
@@ -90,22 +116,7 @@ Color RayTracer::trace(Ray* r,int depth,float length,float refract_idx,float &in
 				N.normalize();
 
 				//点光源产生阴影
-				float shadow = 1.0;
-				if (obj->getType() == Object::SPHERE) {
-					float L_len = L.getLength();
-					L.normalize();
-					Ray* inter2plight = new Ray(intersectPos + 0.01*L, L);
-					for (int j = 0; j < scene->getObjCnt(); j++) {
-						if (j == i) continue;
-						bool in;
-						float t = scene->getObj(j)->intersect(*inter2plight,in);
-						//被遮挡
-						if (t > 0.0f && t < L_len) {
-							shadow = 0.0f;
-							break;
-						}
-					}
-				}
+				float shadow =get_shadow(obj,intersectPos,i,L);
 				if (shadow <= 0.0f) continue;
 
 				//漫反射

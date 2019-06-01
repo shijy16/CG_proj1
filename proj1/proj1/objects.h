@@ -69,6 +69,7 @@ public:
 	const static int PLANE = 1;
 	const static int SPHERE = 2;
 	const static int BEZEIER = 3;
+	const static int AREA = 4;
 	Object(){}
 	int getType() { return type; }
 	//std::string getName() { return name; }
@@ -112,5 +113,15 @@ public:
 	Vector3 getLightCenter();
 	Vector3 getNormal(Vector3 pos);
 };
+class Area :public Object {
+private:
+	Vector3 O, Dx, Dy;
+public:
+	Area(Meterial* m, Texture* t, Vector3 o, Vector3 dx, Vector3 dy) :O(o), Dx(dx), Dy(dy) { type = AREA; objMeterial = m;objTexture = t;}
+	Vector3 getNormal(Vector3 pos) { return Vector3(0, 0, -1); }
+	Color getColor(Vector3 &pos) { return l->color; };
+	float intersect(Ray &r, bool &inside);
+	Vector3 getLightCenter() { return O; };
 
+};
 #endif
