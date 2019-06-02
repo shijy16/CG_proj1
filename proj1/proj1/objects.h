@@ -6,14 +6,16 @@ struct Meterial {
 	float reflect;		//·´Éä
 	float refract;		//ÕÛÉä
 	float diffuse;		//Âþ·´Éä
-	float specular;	//¾µÃæ
+	float specular;		//¾µÃæ
+	float diff_reflect;
 	Meterial() {
 		reflect = 0;
 		refract = 0;
 		diffuse = 0;
 		specular = 0;
+		diff_reflect = -1;
 	}
-	Meterial(float rfl,float rfr,float dfu,float spcl):reflect(rfl),refract(rfr),diffuse(dfu),specular(spcl){}
+	Meterial(float rfl,float rfr,float dfu,float spcl):reflect(rfl),refract(rfr),diffuse(dfu),specular(spcl){ diff_reflect = -1;}
 };
 
 /*		   Texture
@@ -31,7 +33,7 @@ protected:
 public:
 	Texture();
 	Type getType();
-	virtual Color getColor(float x, float y,bool sphere) = 0;
+	virtual Color getColor(float x, float y, bool) = 0;
 };
 
 class PicTexture :public Texture {
@@ -42,7 +44,7 @@ public:
 	PicTexture(std::string);
 	~PicTexture() {}
 	void loadPic();
-	Color getColor(float x, float y, bool sphere);
+	Color getColor(float x, float y,bool);
 };
 
 class ColorTexture :public Texture {
@@ -50,7 +52,7 @@ private:
 	Color textureColor;
 public:
 	ColorTexture(Color c) :textureColor(c) { type = PURE; };
-	Color getColor(float x, float y, bool sphere);
+	Color getColor(float x, float y, bool);
 };
 
 /*******************************************
@@ -77,6 +79,7 @@ public:
 	float getRefract() { return objMeterial->refract; }
 	float getDiffuse() { return objMeterial->diffuse; }
 	float getSpecular() { return objMeterial->specular; }
+	float getDiffReflect() { return objMeterial->diff_reflect; }
 	bool isLight() { return light; }
 	void setAsLight(Light* _l) { light = true; l = _l; }
 	void setAsLight() { light = true; l = new Light(); }
@@ -104,8 +107,9 @@ public:
 
 class Sphere :public Object {
 private:
-	Vector3 P;
+	Vector3 P,vn,ve,vc;
 	float r;
+
 public:
 	Sphere(Meterial* m, Texture* t, Vector3 _P, float _r);
 	Color getColor(Vector3 &pos);

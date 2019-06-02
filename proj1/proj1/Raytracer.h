@@ -4,6 +4,7 @@
 #include "camera.h"
 #include <omp.h>
 #include <time.h>
+#include<random>
 
 class RayTracer {
 private:

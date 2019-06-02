@@ -21,27 +21,42 @@ void PicTexture::loadPic() {
 	cv::waitKey(0);
 }
 
-Color PicTexture::getColor(float x,float y, bool sphere) {
-	if (sphere) {
+
+
+Color PicTexture::getColor(float x, float y, bool isSphere) {
+	if (isSphere) {
 		x *= pic.rows;
 		y *= pic.cols;
 	}
+	int u1 = ((int)x) % pic.rows;
+	int v1 = ((int)y) % pic.cols;
+	while (u1 < 0) u1 += pic.rows;
+	while (v1 < 0) v1 += pic.cols;
+	int u2 = (u1 + 1) %  pic.rows;
+	int v2 = (v1 + 1) % pic.cols;
 
-	int xx = int(x)%pic.rows;
-	int yy = int(y)%pic.cols;
-	while (xx < 0) xx += pic.rows;
-	while (yy < 0) yy += pic.cols;
-	float b = pic.at<cv::Vec3b>(xx, yy)[0]/(float)255;
-	float g = pic.at<cv::Vec3b>(xx, yy)[1]/ (float)255;
-	float r = pic.at<cv::Vec3b>(xx, yy)[2]/ (float)255;
-	return Color(r,g,b);
+	float fracu = x - floorf(x);
+	float fracv = y - floorf(y);
+
+	float w1 = (1 - fracu) * (1 - fracv);
+	float w2 = fracu * (1 - fracv);
+	float w3 = (1 - fracu) * fracv;
+	float w4 = fracu * fracv;
+
+	Color c1 = Color(pic.at<cv::Vec3b>(u1, v1)[2], pic.at<cv::Vec3b>(u1, v1)[1], pic.at<cv::Vec3b>(u1, v1)[0]) / 255.0f;
+	Color c2 = Color(pic.at<cv::Vec3b>(u2, v1)[2], pic.at<cv::Vec3b>(u2, v1)[1], pic.at<cv::Vec3b>(u2, v1)[0]) / 255.0f;
+	Color c3 = Color(pic.at<cv::Vec3b>(u1, v2)[2], pic.at<cv::Vec3b>(u1, v2)[1], pic.at<cv::Vec3b>(u1, v2)[0]) / 255.0f;
+	Color c4 = Color(pic.at<cv::Vec3b>(u2, v2)[2], pic.at<cv::Vec3b>(u2, v2)[1], pic.at<cv::Vec3b>(u2, v2)[0]) / 255.0f;
+
+	Color c = c1 * w1 + c2 * w2 + c3 * w3 + c4 * w4;
+	return c;
 }
 
 /****************************************************/
 /***************    ColorTexture   ******************/
 /*****************************************************/
 
-Color ColorTexture::getColor(float x, float y, bool sphere) {
+Color ColorTexture::getColor(float x, float y,bool isSphere) {
 	return textureColor; 
 }
 
@@ -101,16 +116,23 @@ Sphere::Sphere(Meterial* m, Texture* t, Vector3 _P, float _r) :P(_P), r(_r) {
 	type = SPHERE;
 	objMeterial = m;
 	objTexture = t;
+	vn = Vector3(0, 1, 0);
+	ve = Vector3(1, 0, 0);
+	vc = Vector3::cross(vn,ve);
 }
 
 Color Sphere::getColor(Vector3 &pos) {
 	if (objTexture->getType() == Texture::PURE) {
 		return objTexture->getColor(0, 0,true);
 	} else  {
-		Vector3 tmp = (pos - P) *(1 / r);
-		float x = asin(tmp.getZ()) + PI / float(2);
-		float y = atan2(tmp.getX(), tmp.getY());
-		return objTexture->getColor(x, y,true);
+		Vector3 I = pos - P;
+		I.normalize();
+		float a = acos(-Vector3::dot(I, ve));
+		float b = acos(std::min(std::max(Vector3::dot(I, vc) / sin(a), -1.0f), 1.0f));
+		float u = a / PI;
+		float v = b / 2.0f / PI;
+		if (Vector3::dot(vc, ve) < 0) v = 1 - v;
+		return objTexture->getColor(u, v,true);
 	}
 }
 

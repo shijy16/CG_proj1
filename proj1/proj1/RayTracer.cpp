@@ -125,6 +125,7 @@ Color RayTracer::trace(Ray* r,int depth,float length,float refract_idx,float &in
 	float reflect = intersectObj->getReflect();
 	float refract = intersectObj->getRefract();
 	float diffuse = intersectObj->getDiffuse();
+	float diff_reflect = intersectObj->getDiffReflect();
 	float specular = intersectObj->getSpecular();
 	
 	bool isInsideObj = inter->inside;
@@ -172,16 +173,35 @@ Color RayTracer::trace(Ray* r,int depth,float length,float refract_idx,float &in
 		if (reflect > 0.0f) {
 			Vector3 rf_light = r->dir - N*(Vector3::dot(r->dir,N))*2.0f;		//光碰到物体后反射
 			rf_light.normalize();
-			float a = 0.0f;
-			int temp = 0;
-			Color t = trace(new Ray(intersectPos + rf_light * 0.01f, rf_light),depth + 1,length + inter->t, refract_idx,a,temp);
-			c += Vector3::mul(t,intersectColor)*reflect;	//反射光线出发点是物体外一点点
-			/*if (t.getX() > 0.0f) {
-				t.show();
-				printf("\t");
-				c.show();
-				printf("\n");
-			}*/
+			//模糊反射
+			if (diff_reflect > 0.0f && depth < 2) {
+				//printf(">>>>>>%f",diff_reflect);
+				Vector3 RN1 = Vector3(rf_light.getZ(), rf_light.getY(), -rf_light.getX());
+				Vector3 RN2 = Vector3::cross(RN1, rf_light);
+				reflect *= 1.0f / 8.0f;
+				
+				for (int i = 0; i < 8; i++) {
+					float x_off = (float)rand() / RAND_MAX;
+					float y_off = (float)rand() / RAND_MAX;
+					while (x_off*x_off + y_off * y_off > diff_reflect*diff_reflect) {
+						x_off = (float)rand() / RAND_MAX;
+						y_off = (float)rand() / RAND_MAX;
+					}
+					Vector3 new_rf_light = rf_light + x_off * RN1 + y_off * RN2;
+					new_rf_light.normalize();
+					float a = 0.0f;
+					int temp = 0;
+					Color rf_c = trace(new Ray(intersectPos + new_rf_light * 0.01f, new_rf_light), depth + 1, length + inter->t, refract_idx, a, temp);
+					c += rf_c * reflect;
+				}
+			}
+			//镜面反射
+			else {
+				float a = 0.0f;
+				int temp = 0;
+				Color t = trace(new Ray(intersectPos + rf_light * 0.01f, rf_light), depth + 1, length + inter->t, refract_idx, a, temp);
+				c += Vector3::mul(t, intersectColor)*reflect;	//反射光线出发点是物体外一点点
+			}
 		}
 
 		//折射
@@ -200,6 +220,8 @@ Color RayTracer::trace(Ray* r,int depth,float length,float refract_idx,float &in
 				c += c_t* transparency;
 			}
 		}
+
+
 		free(inter);
 		return c;
 	}
