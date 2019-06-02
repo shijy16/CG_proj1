@@ -28,6 +28,10 @@ Color PicTexture::getColor(float x, float y, bool isSphere) {
 		x *= pic.rows;
 		y *= pic.cols;
 	}
+	else {
+		x /= 10;
+		y /= 10;
+	}
 	int u1 = ((int)x) % pic.rows;
 	int v1 = ((int)y) % pic.cols;
 	while (u1 < 0) u1 += pic.rows;

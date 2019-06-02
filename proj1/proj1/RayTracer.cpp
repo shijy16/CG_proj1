@@ -71,11 +71,11 @@ void RayTracer::run() {
 		for (int j = 0; j < imgHeight; j++) {
 			if ((i == 0 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i, j) && (i == imgWidth - 1 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 2, j)) &&
 				(j == 0 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 1, j - 1)) && (j == imgHeight - 1 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 1, j + 1))))
-				continue;
+					continue;
 			Color c = Color(0, 0, 0);
 			float a = 0.0;
-#pragma omp parallel
-#pragma omp for schedule(dynamic,1)
+			#pragma omp parallel
+			#pragma omp for schedule(dynamic,1)
 			for (int tx = -1; tx < 2; tx++) {
 				for (int ty = -1; ty < 2; ty++) {
 					Ray* tr = camera->getCameraRay(float(i) + float(tx) / 2.0f, float(j) + float(ty) / 2.0f);
@@ -83,14 +83,14 @@ void RayTracer::run() {
 					free(tr);
 				}
 			}
-			//printf("\n>>>>>>>>>>>\n");
-			c = c / (9.0f);
+				//printf("\n>>>>>>>>>>>\n");
+				c = c / (9.0f);
 			result.at<cv::Vec3b>(imgWidth - i - 1, j)[0] = (int(c.getZ() * 255) > 255 ? 255 : int(c.getZ() * 255));
 			result.at<cv::Vec3b>(imgWidth - i - 1, j)[1] = (int(c.getY() * 255) > 255 ? 255 : int(c.getY() * 255));
 			result.at<cv::Vec3b>(imgWidth - i - 1, j)[2] = (int(c.getX() * 255) > 255 ? 255 : int(c.getX() * 255));
 
 
-		}
+	}
 	}
 	showImg();
 	writeImg();
@@ -218,9 +218,9 @@ Color RayTracer::trace(Ray* r,int depth,float length,float refract_idx,float &in
 				//printf(">>>>>>%f",diff_reflect);
 				Vector3 RN1 = Vector3(rf_light.getZ(), rf_light.getY(), -rf_light.getX());
 				Vector3 RN2 = Vector3::cross(RN1, rf_light);
-				reflect *= 1.0f / 8.0f;
+				reflect *= 1.0f / 32.0f;
 				
-				for (int i = 0; i < 8; i++) {
+				for (int i = 0; i < 32; i++) {
 					float x_off = (float)rand() / RAND_MAX;
 					float y_off = (float)rand() / RAND_MAX;
 					while (x_off*x_off + y_off * y_off > diff_reflect*diff_reflect) {

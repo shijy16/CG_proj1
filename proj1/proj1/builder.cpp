@@ -49,13 +49,14 @@ void Builder::buildScene2(Object** objs, int num) {
 	Meterial* groud_m = new Meterial(0.2f, 0, 0.7f, 0);
 	Texture* wall_bl = new ColorTexture(Color(0, 1, 1));
 	Texture* ground = new PicTexture("floor1.bmp");
+	Texture* wall_paper = new PicTexture("wall.jpg");
 	//Texture * ground = new ColorTexture(Color(149.0f/255.0f, 107.0f/255.0f, 8.0f/255.0f));
-	Plane* w1 = new  Plane(wall_m, wall_bl, Vector3(0, 0, 0), Vector3(1, 0, 0), 0);			//正面
+	Plane* w1 = new  Plane(wall_m, wall_paper, Vector3(0, 0, 0), Vector3(1, 0, 0), 0);			//正面
 	Plane* w3 = new  Plane(groud_m, ground, Vector3(0, 0, 0), Vector3(0, 0, 1), 0);				//地板
 	//Sphere* lightSource = new Sphere(new Meterial(0, 0, 0, 0), new ColorTexture(Color(1, 1, 1)), Vector3(200 * SIZE, 200 * SIZE, 500 * SIZE), 40.0);
 	//lightSource->setAsLight(new Light(Vector3(200 * SIZE, 200 * SIZE, 500 * SIZE), Color(1, 1, 1), 5000, 1));
 	Area* lightSource = new Area(new Meterial(0, 0, 0, 0), new ColorTexture(Color(1, 1, 1)), Vector3(190 * SIZE, 400 * SIZE, 480 * SIZE), Vector3(0, 50 * SIZE, 0), Vector3(50 * SIZE, 0, 0),50*SIZE);
-	lightSource->setAsLight(new Light(Vector3(200 * SIZE, 400 * SIZE, 480 * SIZE), Color(1, 1, 1), 5000, 1));
+	lightSource->setAsLight(new Light(Vector3(200 * SIZE, 400 * SIZE, 500 * SIZE), Color(1, 1, 1), 5000, 1));
 	scene->addObj(lightSource);
 	scene->addObj(w1);
 	scene->addObj(w3);

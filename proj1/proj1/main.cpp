@@ -42,7 +42,7 @@ int main(void){
 	o[0] = s.getSphere(m2, t2, Vector3(150 * SIZE, 300 * SIZE, 150 * SIZE), 80 * SIZE);
 
 	Meterial* m3 = s.getMeterial(0.5f, 0, 0.2f, 0.6);
-	//m3->diff_reflect = 0.2f;
+	//m3->diff_reflect = 0.5f;
 	ColorTexture* t3 = s.getColorTexture(Color((float)192 / (float)255, (float)192 / (float)255, (float)192 / (float)255));
 	o[2] = s.getSphere(m3, t3, Vector3(150 * SIZE, 500 * SIZE, 150 * SIZE), 80 * SIZE);
 
