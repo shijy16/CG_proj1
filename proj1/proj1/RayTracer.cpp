@@ -22,34 +22,74 @@ void RayTracer::run() {
 	int cur_obj = -1;
 //#pragma omp parallel
 //#pragma omp for schedule(dynamic,2)
+	//for (int i = 0; i < imgWidth; i++) {
+	//	printf("%.2lf%%\r", i * 100.0 / imgWidth);
+	//	for (int j = 0; j < imgHeight; j++) {
+	//		Ray* r = camera->getCameraRay(i, j);
+	//		float a = 0.0;
+	//		Color c = trace(r,0,0,1.0f,a, cur_obj);
+	//		free(r);
+	//		//边缘超采样
+	//		if (cur_obj != last_obj) {
+	//			//printf("ohhh\n");
+	//			last_obj = cur_obj;
+	//			c = Color(0, 0, 0);
+	//			#pragma omp parallel
+	//			#pragma omp for schedule(dynamic,1)
+	//			for (int tx = -10; tx < 11; tx++) {
+	//				for (int ty = -10; ty < 11; ty++) {
+	//					Ray* tr = camera->getCameraRay(float(i) + float(tx) / 20.0f, float(j) + float(ty) / 20.0f);
+	//					//tr->show();
+	//					c += trace(tr, 0, 0, 1.0f, a, cur_obj);
+	//					free(tr);
+	//				}
+	//			}
+	//			//printf("\n>>>>>>>>>>>\n");
+	//			c = c / (21.0f*21.0f);
+	//		}
+	//		result.at<cv::Vec3b>(imgWidth - i - 1, j)[0] = (int(c.getZ() * 255) > 255 ? 255 : int(c.getZ() * 255));
+	//		result.at<cv::Vec3b>(imgWidth - i - 1, j)[1] = (int(c.getY() * 255) > 255 ? 255 : int(c.getY() * 255));
+	//		result.at<cv::Vec3b>(imgWidth - i - 1, j)[2] = (int(c.getX() * 255) > 255 ? 255 : int(c.getX() * 255));
+	//	}
+	//}
+
+	//重采样
 	for (int i = 0; i < imgWidth; i++) {
-		printf("%.2lf%%\r", i * 100.0 / imgWidth);
+		printf("sampling: %.2lf%%\r", i * 100.0 / imgWidth);
 		for (int j = 0; j < imgHeight; j++) {
 			Ray* r = camera->getCameraRay(i, j);
 			float a = 0.0;
-			Color c = trace(r,0,0,1.0f,a, cur_obj);
+			Color c = trace(r, 0, 0, 1.0f, a, cur_obj);
 			free(r);
-			//边缘超采样
-			if (cur_obj != last_obj) {
-				//printf("ohhh\n");
-				last_obj = cur_obj;
-				c = Color(0, 0, 0);
-				#pragma omp parallel
-				#pragma omp for schedule(dynamic,1)
-				for (int tx = -10; tx < 11; tx++) {
-					for (int ty = -10; ty < 11; ty++) {
-						Ray* tr = camera->getCameraRay(float(i) + float(tx) / 20.0f, float(j) + float(ty) / 20.0f);
-						//tr->show();
-						c += trace(tr, 0, 0, 1.0f, a, cur_obj);
-						free(tr);
-					}
-				}
-				//printf("\n>>>>>>>>>>>\n");
-				c = c / (21.0f*21.0f);
-			}
 			result.at<cv::Vec3b>(imgWidth - i - 1, j)[0] = (int(c.getZ() * 255) > 255 ? 255 : int(c.getZ() * 255));
 			result.at<cv::Vec3b>(imgWidth - i - 1, j)[1] = (int(c.getY() * 255) > 255 ? 255 : int(c.getY() * 255));
 			result.at<cv::Vec3b>(imgWidth - i - 1, j)[2] = (int(c.getX() * 255) > 255 ? 255 : int(c.getX() * 255));
+		}
+	}
+	for (int i = 0; i < imgWidth; i++) {
+		printf("resampling: %.2lf%%\r", i * 100.0 / imgWidth);
+		for (int j = 0; j < imgHeight; j++) {
+			if ((i == 0 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i, j) && (i == imgWidth - 1 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 2, j)) &&
+				(j == 0 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 1, j - 1)) && (j == imgHeight - 1 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 1, j + 1))))
+				continue;
+			Color c = Color(0, 0, 0);
+			float a = 0.0;
+#pragma omp parallel
+#pragma omp for schedule(dynamic,1)
+			for (int tx = -1; tx < 2; tx++) {
+				for (int ty = -1; ty < 2; ty++) {
+					Ray* tr = camera->getCameraRay(float(i) + float(tx) / 2.0f, float(j) + float(ty) / 2.0f);
+					c += trace(tr, 0, 0, 1.0f, a, cur_obj);
+					free(tr);
+				}
+			}
+			//printf("\n>>>>>>>>>>>\n");
+			c = c / (9.0f);
+			result.at<cv::Vec3b>(imgWidth - i - 1, j)[0] = (int(c.getZ() * 255) > 255 ? 255 : int(c.getZ() * 255));
+			result.at<cv::Vec3b>(imgWidth - i - 1, j)[1] = (int(c.getY() * 255) > 255 ? 255 : int(c.getY() * 255));
+			result.at<cv::Vec3b>(imgWidth - i - 1, j)[2] = (int(c.getX() * 255) > 255 ? 255 : int(c.getX() * 255));
+
+
 		}
 	}
 	showImg();
