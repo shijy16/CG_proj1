@@ -116,12 +116,13 @@ public:
 class Area :public Object {
 private:
 	Vector3 O, Dx, Dy;
+	int size;
 public:
-	Area(Meterial* m, Texture* t, Vector3 o, Vector3 dx, Vector3 dy) :O(o), Dx(dx), Dy(dy) { type = AREA; objMeterial = m;objTexture = t;}
+	Area(Meterial* m, Texture* t, Vector3 o, Vector3 dx, Vector3 dy,int s) :O(o), Dx(dx), Dy(dy),size(s) { type = AREA; objMeterial = m;objTexture = t;}
 	Vector3 getNormal(Vector3 pos) { return Vector3(0, 0, -1); }
 	Color getColor(Vector3 &pos) { return l->color; };
 	float intersect(Ray &r, bool &inside);
 	Vector3 getLightCenter() { return O; };
-
+	float getSize() { return size; }
 };
 #endif

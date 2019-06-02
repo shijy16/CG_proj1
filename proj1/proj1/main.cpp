@@ -37,17 +37,17 @@ int main(void){
 	ColorTexture* t1 = s.getColorTexture(Color((float)192 / (float)255, (float)192 / (float)255, (float)192 / (float)255));
 	o[1] = s.getSphere(m1, t1, Vector3(150 * SIZE, 100 * SIZE, 150 * SIZE), 80 * SIZE);
 
-	Meterial* m2 = s.getMeterial(0.0f, 0, 1.0f, 0.6);
-	ColorTexture* t2 = s.getColorTexture(Color((float)128 / (float)255, (float)0 / (float)255, (float)128 / (float)255));
+	Meterial* m2 = s.getMeterial(0.0f, 1.33f, 0.0f, 0.8f);
+	ColorTexture* t2 = s.getColorTexture(Color((float)0 / (float)255, (float)0 / (float)255, (float)0 / (float)255));
 	o[0] = s.getSphere(m2, t2, Vector3(150 * SIZE, 300 * SIZE, 150 * SIZE), 80 * SIZE);
 
-	Meterial* m3 = s.getMeterial(0.0f, 1.33f, 0.0f, 0.8f);
-	ColorTexture* t3 = s.getColorTexture(Color((float)0 / (float)255, (float)0 / (float)255, (float)0 / (float)255));
+	Meterial* m3 = s.getMeterial(0.0f, 0, 1.0f, 0.6);
+	ColorTexture* t3 = s.getColorTexture(Color((float)128 / (float)255, (float)0 / (float)255, (float)128 / (float)255));
 	o[2] = s.getSphere(m3, t3, Vector3(150 * SIZE, 500 * SIZE, 150 * SIZE), 80 * SIZE);
 
-	Builder* b = new Builder();
+	Builder* b = new Builder(SIZE);
 	b->buildCamera(Vector3(500 * SIZE, 300 * SIZE, 150 * SIZE), Vector3(400 * SIZE, 100 * SIZE, 50 * SIZE), Vector3(0, 0, 1), Vector3(0, 1, 0), 400 * SIZE, 200 * SIZE);
-	b->buildScene2(o, 3, SIZE);
+	b->buildScene2(o, 3);
 
 
 	b->rayTracer_begin();

@@ -56,15 +56,16 @@ void RayTracer::run() {
 	writeImg();
 }
 
-float RayTracer::get_shadow(Object* obj, Vector3 intersectPos, int i, Vector3& L) {
+float RayTracer::get_shadow(Object* obj, Vector3 intersectPos, int objId, Vector3& L) {
 	//点光源产生阴影
 	float shadow = 1.0;
+	L = obj->getLightCenter() - intersectPos;
 	if (obj->getType() == Object::SPHERE) {
 		float L_len = L.getLength();
 		L.normalize();
 		Ray* inter2plight = new Ray(intersectPos + 0.01*L, L);
 		for (int j = 0; j < scene->getObjCnt(); j++) {
-			if (j == i) continue;
+			if (j == objId) continue;
 			bool in;
 			float t = scene->getObj(j)->intersect(*inter2plight, in);
 			//被遮挡
@@ -72,11 +73,37 @@ float RayTracer::get_shadow(Object* obj, Vector3 intersectPos, int i, Vector3& L
 				shadow = 0.0f;
 			}
 		}
+		free(inter2plight);
 	}
 	else if (obj->getType() == Object::AREA) {
 		L.normalize();
-		//shadow = 0.0f;
-		//printf(">>>>>>>>>>>>>>");
+		shadow = 0.0f;
+		Area* areaLight = (Area*)obj;
+		for (int i = -areaLight->getSize(); i < areaLight->getSize() + 1; i+=scale*10) {
+			for (int j = -areaLight->getSize(); j < areaLight->getSize() + 1; j+= scale * 10) {
+				//printf("%d,%d\n", i, j);
+				Vector3 lightPos = Vector3(areaLight->getLightCenter().getX() + i, areaLight->getLightCenter().getY() + j, areaLight->getLightCenter().getZ());
+				Vector3 tmpDir = lightPos - intersectPos;
+				float L_len = tmpDir.getLength();
+				tmpDir.normalize();
+
+				Ray* inter2plight = new Ray(intersectPos + 0.01*tmpDir, tmpDir);
+				bool sha = true;
+				for (int m = 0; m < scene->getObjCnt(); m++) {
+					if (m == objId) continue;
+					bool in;
+					float t = scene->getObj(m)->intersect(*inter2plight, in);
+					//被遮挡
+					if (t > 0.0f && t < L_len) {
+						sha = false;
+					}
+				}
+				if (sha) {
+					shadow += 1.0f / 100.0f;
+				}
+				free(inter2plight);
+			}
+		}
 	}
 	return shadow;
 }
@@ -112,7 +139,7 @@ Color RayTracer::trace(Ray* r,int depth,float length,float refract_idx,float &in
 		for (int i = 0; i < scene->getObjCnt(); i++) {
 			Object* obj = scene->getObj(i);
 			if (obj->isLight()) {
-				Vector3 L = obj->getLightCenter() - intersectPos;	//交点到光源
+				Vector3 L;	//交点到光源
 				N.normalize();
 
 				//点光源产生阴影

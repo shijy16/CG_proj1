@@ -10,12 +10,13 @@ private:
 	Camera* camera;
 	Scene* scene;
 	cv::Mat result;
+	int scale;
 	int imgHeight;
 	int imgWidth;
 	float MAX_LIGHT_LEN = 1000000;
 	int MAX_DEPTH = 10;
 public:
-	RayTracer(Camera* c, Scene* s, int height, int width) :camera(c), scene(s), imgHeight(height), imgWidth(width) {}
+	RayTracer(Camera* c, Scene* s, int height, int width,int sc) :camera(c), scene(s), imgHeight(height), imgWidth(width), scale(sc){}
 	cv::Mat getImg() { return result; }
 	void showImg();
 	void writeImg();
