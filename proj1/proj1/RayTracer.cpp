@@ -194,7 +194,7 @@ Color RayTracer::trace(Ray* r,int depth,double length,double refract_idx,double 
 		return intersectColor;
 	}
 	else {
-		Color c = new Color();
+		Color c = Color();
 		for (int i = 0; i < scene->getObjCnt(); i++) {
 			Object* obj = scene->getObj(i);
 			if (obj->isLight()) {
@@ -249,7 +249,9 @@ Color RayTracer::trace(Ray* r,int depth,double length,double refract_idx,double 
 					new_rf_light.normalize();
 					double a = 0.0f;
 					int temp = 0;
-					Color rf_c = trace(new Ray(intersectPos + new_rf_light * EPSILON, new_rf_light), depth + 1, length + inter->t, refract_idx, a, temp);
+					Ray* tl = new Ray(intersectPos + new_rf_light * EPSILON, new_rf_light);
+					Color rf_c = trace(tl, depth + 1, length + inter->t, refract_idx, a, temp);
+					free(tl);
 					c += rf_c * reflect;
 				}
 			}
@@ -257,7 +259,9 @@ Color RayTracer::trace(Ray* r,int depth,double length,double refract_idx,double 
 			else {
 				double a = 0.0f;
 				int temp = 0;
-				Color t = trace(new Ray(intersectPos + rf_light * EPSILON, rf_light), depth + 1, length + inter->t, refract_idx, a, temp);
+				Ray* tl = new Ray(intersectPos + rf_light * EPSILON, rf_light);
+				Color t = trace(tl, depth + 1, length + inter->t, refract_idx, a, temp);
+				free(tl);
 				c += Vector3::mul(t, intersectColor)*reflect;	//反射光线出发点是物体外一点点
 			}
 		}
@@ -272,14 +276,15 @@ Color RayTracer::trace(Ray* r,int depth,double length,double refract_idx,double 
 				Vector3 T = (n * r->dir) + (n * cosI - sqrtl(cosT2)) * N;
 				double inter_len = 10000.0;
 				int t = 0;
-				Color c_t = trace(new Ray(intersectPos + T * EPSILON, T), depth + 1,length + inter->t, refract,inter_len,t);
+				Ray* tl = new Ray(intersectPos + T * EPSILON, T);
+				Color c_t = trace(tl, depth + 1,length + inter->t, refract,inter_len,t);
+				free(tl);
 				//Beer's Law
 				Color absorbance = intersectColor * 0.0005f * (-inter_len);
 				Color transparency = Color(expl(absorbance.getX()), expl(absorbance.getY()), expl(absorbance.getZ()));
 				c += c_t* transparency;
 			}
 		}
-
 
 		free(inter);
 		return c;

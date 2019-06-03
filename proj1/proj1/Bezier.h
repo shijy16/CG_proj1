@@ -17,8 +17,11 @@ public:
 			point_cnt++;
 		}
 	}
-
+	double getCoefficient(int n, int i, double u);
+	double getDCoefficient(int n, int i, double u);
+	Vector3 getNormal(Vector3 pos);
 	Vector3 curve3d(double u, double angle);
+	void write(std::string file_name);
 
 	static int fac(int b);
 	static int C(int m,int n);

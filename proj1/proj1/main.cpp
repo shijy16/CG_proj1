@@ -10,7 +10,7 @@
 
 
 */
-double SIZE = 1;
+double SIZE = 3;
 int main(void){
 	time_t start, stop;
 	start = time(NULL);
