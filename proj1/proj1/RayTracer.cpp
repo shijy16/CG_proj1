@@ -78,7 +78,6 @@ void RayTracer::run() {
 		}
 	}
 	//重采样
-#pragma omp parallel for
 	for (int i = 0; i < imgWidth; i++) {
 #ifdef WIN
 		printf("resampling: %.2lf% %\r", i * 100.0 / imgWidth);
@@ -86,6 +85,7 @@ void RayTracer::run() {
 #ifdef UBUNTU
 		printf("resampling: %.2lf% %\n\r", i * 100.0 / imgWidth);
 #endif
+#pragma omp parallel for
 		for (int j = 0; j < imgHeight; j++) {
 			if ((i == 0 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i, j) && (i == imgWidth - 1 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 2, j)) &&
 				(j == 0 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 1, j - 1)) && (j == imgHeight - 1 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 1, j + 1))))
@@ -121,7 +121,7 @@ double RayTracer::get_shadow(Object* obj, Vector3 intersectPos, int objId, Vecto
 	if (obj->getType() == Object::SPHERE) {
 		double L_len = L.getLength();
 		L.normalize();
-		Ray* inter2plight = new Ray(intersectPos + 0.01*L, L);
+		Ray* inter2plight = new Ray(intersectPos + EPSILON*L, L);
 		for (int j = 0; j < scene->getObjCnt(); j++) {
 			if (j == objId) continue;
 			bool in;
@@ -145,7 +145,7 @@ double RayTracer::get_shadow(Object* obj, Vector3 intersectPos, int objId, Vecto
 				double L_len = tmpDir.getLength();
 				tmpDir.normalize();
 
-				Ray* inter2plight = new Ray(intersectPos + 0.01*tmpDir, tmpDir);
+				Ray* inter2plight = new Ray(intersectPos + EPSILON *tmpDir, tmpDir);
 				bool sha = true;
 				for (int m = 0; m < scene->getObjCnt(); m++) {
 					if (m == objId) continue;
@@ -221,7 +221,7 @@ Color RayTracer::trace(Ray* r,int depth,double length,double refract_idx,double 
 					Vector3 rf_l = L - N * (Vector3::dot(L, N))*2.0f;
 					double dot = Vector3::dot(rf_l, r->dir);
 					if (dot > 0) {
-						double t = powf(dot, 20)*specular*shadow;
+						double t = powl(dot, 20)*specular*shadow;
 						c += t * obj->getColor(obj->getLightCenter());
 					}
 				}
@@ -249,7 +249,7 @@ Color RayTracer::trace(Ray* r,int depth,double length,double refract_idx,double 
 					new_rf_light.normalize();
 					double a = 0.0f;
 					int temp = 0;
-					Color rf_c = trace(new Ray(intersectPos + new_rf_light * 0.01f, new_rf_light), depth + 1, length + inter->t, refract_idx, a, temp);
+					Color rf_c = trace(new Ray(intersectPos + new_rf_light * EPSILON, new_rf_light), depth + 1, length + inter->t, refract_idx, a, temp);
 					c += rf_c * reflect;
 				}
 			}
@@ -257,7 +257,7 @@ Color RayTracer::trace(Ray* r,int depth,double length,double refract_idx,double 
 			else {
 				double a = 0.0f;
 				int temp = 0;
-				Color t = trace(new Ray(intersectPos + rf_light * 0.01f, rf_light), depth + 1, length + inter->t, refract_idx, a, temp);
+				Color t = trace(new Ray(intersectPos + rf_light * EPSILON, rf_light), depth + 1, length + inter->t, refract_idx, a, temp);
 				c += Vector3::mul(t, intersectColor)*reflect;	//反射光线出发点是物体外一点点
 			}
 		}
@@ -269,12 +269,13 @@ Color RayTracer::trace(Ray* r,int depth,double length,double refract_idx,double 
 			double cosI = - Vector3::dot(N,r->dir);
 			double cosT2 = 1.0f - n * n * (1.0f - cosI * cosI);
 			if (cosT2 > 0.0f){
-				Vector3 T = (n * r->dir) + (n * cosI - sqrtf(cosT2)) * N;
+				Vector3 T = (n * r->dir) + (n * cosI - sqrtl(cosT2)) * N;
 				double inter_len = 10000.0;
 				int t = 0;
-				Color c_t = trace(new Ray(intersectPos + T * 0.001f, T), depth + 1,length + inter->t, refract,inter_len,t);
+				Color c_t = trace(new Ray(intersectPos + T * EPSILON, T), depth + 1,length + inter->t, refract,inter_len,t);
+				//Beer's Law
 				Color absorbance = intersectColor * 0.0005f * (-inter_len);
-				Color transparency = Color(expf(absorbance.getX()), expf(absorbance.getY()), expf(absorbance.getZ()));
+				Color transparency = Color(expl(absorbance.getX()), expl(absorbance.getY()), expl(absorbance.getZ()));
 				c += c_t* transparency;
 			}
 		}

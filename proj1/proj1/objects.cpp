@@ -38,8 +38,8 @@ Color PicTexture::getColor(double x, double y, bool isSphere) {
 	int u2 = (u1 + 1) %  pic.rows;
 	int v2 = (v1 + 1) % pic.cols;
 
-	double fracu = x - floorf(x);
-	double fracv = y - floorf(y);
+	double fracu = x - floorl(x);
+	double fracv = y - floorl(y);
 
 	double w1 = (1 - fracu) * (1 - fracv);
 	double w2 = fracu * (1 - fracv);

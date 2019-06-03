@@ -16,7 +16,8 @@ Vector3 Bezier::curve3d(double u, double angle) {
 	double tx = 0;
 	double ty = 0;
 	for (int i = 0; i < point_cnt; i++) {
-
+		tx += x[i]*C(i, point_cnt - 1)*powl(u, i)*powl(1.0f - u, point_cnt - 1 - i);
+		ty += y[i]*C(i, point_cnt - 1)*powl(u, i)*powl(1.0f - u, point_cnt - 1 - i);
 	}
-	return Vector3(0, 0, 0);
+	return Vector3(pos.getX() + cosl(angle)*tx, pos.getY()+ty, pos.getZ()+tx*sinl(angle));
 }

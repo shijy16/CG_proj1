@@ -5,6 +5,7 @@
 #include <opencv2/opencv.hpp>
 
 #define PI 3.1415926
+#define EPSILON 0.0001
 typedef Vector3 Color;
 
 class Point {
