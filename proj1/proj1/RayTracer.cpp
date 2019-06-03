@@ -16,13 +16,7 @@ void RayTracer::writeImg() {
 	cv::imwrite(std::string(date), result);
 #endif
 #ifdef UBUNTU
-	struct tm t;
-	time_t now;
-	time(&now);
-	localtime(&t, &now);
-	char* date = new char[20];
-	sprintf(date, 20, "result/%d%.2d%d.png", t.tm_year + 1900, t.tm_mon + 1, t.tm_mday);
-	cv::imwrite(std::string(date), result);
+	cv::imwrite("result/ubuntu.png", result);
 #endif
 }
 
@@ -72,6 +66,7 @@ void RayTracer::run() {
 #ifdef UBUNTU
 		printf("sampling: %.2lf% %\n\r", i * 100.0 / imgWidth);
 #endif
+#pragma omp parallel for
 		for (int j = 0; j < imgHeight; j++) {
 			Ray* r = camera->getCameraRay(i, j);
 			double a = 0.0;
@@ -83,6 +78,7 @@ void RayTracer::run() {
 		}
 	}
 	//ÖØ²ÉÑù
+#pragma omp parallel for
 	for (int i = 0; i < imgWidth; i++) {
 #ifdef WIN
 		printf("resampling: %.2lf% %\r", i * 100.0 / imgWidth);
