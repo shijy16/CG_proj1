@@ -84,7 +84,7 @@ public:
 	void setAsLight(Light* _l) { light = true; l = _l; }
 	void setAsLight() { light = true; l = new Light(); }
 	void setAsLight(double brightness) { light = true; l = new Light(); l->brightness = brightness; }
-	virtual Color getColor(Vector3 &pos) = 0;
+	virtual Color getColor(Vector3 pos) = 0;
 	virtual double intersect(Ray &r,bool &inside) = 0;
 	virtual Vector3 getLightCenter() { return Vector3(); }
 	virtual Vector3 getNormal(Vector3 pos) = 0;
