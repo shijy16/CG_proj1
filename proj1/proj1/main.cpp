@@ -1,6 +1,7 @@
 #include <iostream>
 #include "builder.h"
 #include "Bezier.h"
+#define WIN
 /*
 	Reference
 		http://www.flipcode.com/archives/Raytracing_Topics_Techniques-Part_1_Introduction.shtml

@@ -5,6 +5,7 @@ void RayTracer::showImg() {
 }
 
 void RayTracer::writeImg() {
+#ifdef WIN
 	struct tm t;
 	time_t now; 
 	time(&now);
@@ -12,6 +13,16 @@ void RayTracer::writeImg() {
 	char* date = new char[20];
 	sprintf_s(date, 20, "result/%d%.2d%d.png", t.tm_year + 1900, t.tm_mon + 1, t.tm_mday);
 	cv::imwrite(std::string(date), result);
+#endif
+#ifdef UBUNTU
+	struct tm t;
+	time_t now;
+	time(&now);
+	localtime(&t, &now);
+	char* date = new char[20];
+	sprintf(date, 20, "result/%d%.2d%d.png", t.tm_year + 1900, t.tm_mon + 1, t.tm_mday);
+	cv::imwrite(std::string(date), result);
+#endif
 }
 
 
@@ -54,7 +65,7 @@ void RayTracer::run() {
 	//}
 
 	for (int i = 0; i < imgWidth; i++) {
-		printf("sampling: %.2lf%%\r", i * 100.0 / imgWidth);
+		printf("sampling: %.2lf%%\r\n", i * 100.0 / imgWidth);
 		for (int j = 0; j < imgHeight; j++) {
 			Ray* r = camera->getCameraRay(i, j);
 			double a = 0.0;
@@ -67,7 +78,7 @@ void RayTracer::run() {
 	}
 	//ÖØ²ÉÑù
 	for (int i = 0; i < imgWidth; i++) {
-		printf("resampling: %.2lf%%\r", i * 100.0 / imgWidth);
+		printf("resampling: %.2lf%%\r\n", i * 100.0 / imgWidth);
 		for (int j = 0; j < imgHeight; j++) {
 			if ((i == 0 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i, j) && (i == imgWidth - 1 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 2, j)) &&
 				(j == 0 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 1, j - 1)) && (j == imgHeight - 1 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 1, j + 1))))

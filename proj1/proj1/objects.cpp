@@ -18,7 +18,6 @@ PicTexture::PicTexture(std::string p){
 
 void PicTexture::loadPic() {
 	pic = cv::imread(picPath);
-	cv::waitKey(0);
 }
 
 
@@ -95,7 +94,7 @@ double Plane::intersect(Ray &r, bool &inside) {
 	else return -1;
 }
 
-Color Plane::getColor(Vector3 &pos) {
+Color Plane::getColor(Vector3 pos) {
 	if (objTexture->getType() == Texture::PURE) {
 		return objTexture->getColor(pos.getX(), pos.getY(),false);
 	} else {
@@ -125,7 +124,7 @@ Sphere::Sphere(Meterial* m, Texture* t, Vector3 _P, double _r) :P(_P), r(_r) {
 	vc = Vector3::cross(vn,ve);
 }
 
-Color Sphere::getColor(Vector3 &pos) {
+Color Sphere::getColor(Vector3 pos) {
 	if (objTexture->getType() == Texture::PURE) {
 		return objTexture->getColor(0, 0,true);
 	} else  {

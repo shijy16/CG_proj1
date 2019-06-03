@@ -99,7 +99,7 @@ private:
 	double D;
 public:
 	Plane(Meterial* m, Texture* t, Vector3 _P, Vector3 _n, double _D);
-	Color getColor(Vector3 &pos);
+	Color getColor(Vector3 pos);
 	double intersect(Ray &r, bool &inside);
 	Vector3 getLightCenter();
 	Vector3 getNormal(Vector3 pos);
@@ -112,7 +112,7 @@ private:
 
 public:
 	Sphere(Meterial* m, Texture* t, Vector3 _P, double _r);
-	Color getColor(Vector3 &pos);
+	Color getColor(Vector3 pos);
 	double intersect(Ray &r, bool &inside);
 	Vector3 getLightCenter();
 	Vector3 getNormal(Vector3 pos);
@@ -124,7 +124,7 @@ private:
 public:
 	Area(Meterial* m, Texture* t, Vector3 o, Vector3 dx, Vector3 dy,int s) :O(o), Dx(dx), Dy(dy),size(s) { type = AREA; objMeterial = m;objTexture = t;}
 	Vector3 getNormal(Vector3 pos) { return Vector3(0, 0, -1); }
-	Color getColor(Vector3 &pos) { return l->color; };
+	Color getColor(Vector3 pos) { return l->color; };
 	double intersect(Ray &r, bool &inside);
 	Vector3 getLightCenter() { return O; };
 	double getSize() { return size; }
