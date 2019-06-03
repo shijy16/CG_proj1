@@ -1,7 +1,6 @@
 #include <iostream>
 #include "builder.h"
 #include "Bezier.h"
-#define WIN
 /*
 	Reference
 		http://www.flipcode.com/archives/Raytracing_Topics_Techniques-Part_1_Introduction.shtml
@@ -11,16 +10,13 @@
 
 
 */
-double SIZE = 3;
+double SIZE = 1;
 int main(void){
 	time_t start, stop;
 	start = time(NULL);
 	Scene s = Scene();
 	Object** o;
 	o = new Object*[10];
-
-
-	system("pause");
 
 	//scene1
 	//Meterial* m1 = s.getMeterial(1.0f, 0, 0.0f, 0.6);
@@ -49,7 +45,7 @@ int main(void){
 	o[0] = s.getSphere(m2, t2, Vector3(150 * SIZE, 300 * SIZE, 150 * SIZE), 80 * SIZE);
 
 	Meterial* m3 = s.getMeterial(0.5f, 0, 0.2f, 0.6);
-	m3->diff_reflect = 0.5f;
+	//m3->diff_reflect = 0.5f;
 	ColorTexture* t3 = s.getColorTexture(Color((double)192 / (double)255, (double)192 / (double)255, (double)192 / (double)255));
 	o[2] = s.getSphere(m3, t3, Vector3(150 * SIZE, 500 * SIZE, 150 * SIZE), 80 * SIZE);
 

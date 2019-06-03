@@ -1,4 +1,5 @@
 #include "Raytracer.h"
+#define WIN
 
 void RayTracer::showImg() {
 	cv::imshow("raytracer", result); 
@@ -65,7 +66,12 @@ void RayTracer::run() {
 	//}
 
 	for (int i = 0; i < imgWidth; i++) {
-		printf("sampling: %.2lf%%\r\n", i * 100.0 / imgWidth);
+#ifdef WIN
+		printf("sampling: %.2lf% %\r", i * 100.0 / imgWidth);
+#endif
+#ifdef UBUNTU
+		printf("sampling: %.2lf% %\n\r", i * 100.0 / imgWidth);
+#endif
 		for (int j = 0; j < imgHeight; j++) {
 			Ray* r = camera->getCameraRay(i, j);
 			double a = 0.0;
@@ -78,7 +84,12 @@ void RayTracer::run() {
 	}
 	//ÖØ²ÉÑù
 	for (int i = 0; i < imgWidth; i++) {
-		printf("resampling: %.2lf%%\r\n", i * 100.0 / imgWidth);
+#ifdef WIN
+		printf("resampling: %.2lf% %\r", i * 100.0 / imgWidth);
+#endif
+#ifdef UBUNTU
+		printf("resampling: %.2lf% %\n\r", i * 100.0 / imgWidth);
+#endif
 		for (int j = 0; j < imgHeight; j++) {
 			if ((i == 0 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i, j) && (i == imgWidth - 1 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 2, j)) &&
 				(j == 0 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 1, j - 1)) && (j == imgHeight - 1 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 1, j + 1))))
