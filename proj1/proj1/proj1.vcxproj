@@ -112,6 +112,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bezier.cpp" />
     <ClCompile Include="builder.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="objects.cpp" />
@@ -120,6 +121,7 @@
     <ClCompile Include="scene.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bezier.h" />
     <ClInclude Include="builder.h" />
     <ClInclude Include="camera.h" />
     <ClInclude Include="common.h" />

@@ -23,7 +23,7 @@ void PicTexture::loadPic() {
 
 
 
-Color PicTexture::getColor(float x, float y, bool isSphere) {
+Color PicTexture::getColor(double x, double y, bool isSphere) {
 	if (isSphere) {
 		x *= pic.rows;
 		y *= pic.cols;
@@ -39,13 +39,13 @@ Color PicTexture::getColor(float x, float y, bool isSphere) {
 	int u2 = (u1 + 1) %  pic.rows;
 	int v2 = (v1 + 1) % pic.cols;
 
-	float fracu = x - floorf(x);
-	float fracv = y - floorf(y);
+	double fracu = x - floorf(x);
+	double fracv = y - floorf(y);
 
-	float w1 = (1 - fracu) * (1 - fracv);
-	float w2 = fracu * (1 - fracv);
-	float w3 = (1 - fracu) * fracv;
-	float w4 = fracu * fracv;
+	double w1 = (1 - fracu) * (1 - fracv);
+	double w2 = fracu * (1 - fracv);
+	double w3 = (1 - fracu) * fracv;
+	double w4 = fracu * fracv;
 
 	Color c1 = Color(pic.at<cv::Vec3b>(u1, v1)[2], pic.at<cv::Vec3b>(u1, v1)[1], pic.at<cv::Vec3b>(u1, v1)[0]) / 255.0f;
 	Color c2 = Color(pic.at<cv::Vec3b>(u2, v1)[2], pic.at<cv::Vec3b>(u2, v1)[1], pic.at<cv::Vec3b>(u2, v1)[0]) / 255.0f;
@@ -60,7 +60,7 @@ Color PicTexture::getColor(float x, float y, bool isSphere) {
 /***************    ColorTexture   ******************/
 /*****************************************************/
 
-Color ColorTexture::getColor(float x, float y,bool isSphere) {
+Color ColorTexture::getColor(double x, double y,bool isSphere) {
 	return textureColor; 
 }
 
@@ -68,7 +68,7 @@ Color ColorTexture::getColor(float x, float y,bool isSphere) {
 /****************************************************/
 /******************    Plane   **********************/
 /*****************************************************/
-Plane::Plane(Meterial* m, Texture* t,Vector3 _P, Vector3 _n, float _D) :P(_P),n(_n), D(_D) {
+Plane::Plane(Meterial* m, Texture* t,Vector3 _P, Vector3 _n, double _D) :P(_P),n(_n), D(_D) {
 	type = PLANE;
 	objMeterial = m;
 	objTexture = t;
@@ -85,11 +85,11 @@ Plane::Plane(Meterial* m, Texture* t,Vector3 _P, Vector3 _n, float _D) :P(_P),n(
 	}
 }
 
-float Plane::intersect(Ray &r, bool &inside) {
+double Plane::intersect(Ray &r, bool &inside) {
 	inside = false;
-	float deno = Vector3::dot(r.dir,n);
+	double deno = Vector3::dot(r.dir,n);
 	if (deno == 0.0f) return -1;
-	float res = -(D + Vector3::dot(n,r.o));
+	double res = -(D + Vector3::dot(n,r.o));
 	res /= deno;
 	if (res > 0.0f) return res;
 	else return -1;
@@ -99,8 +99,8 @@ Color Plane::getColor(Vector3 &pos) {
 	if (objTexture->getType() == Texture::PURE) {
 		return objTexture->getColor(pos.getX(), pos.getY(),false);
 	} else {
-		float tx = Vector3::dot(pos - P, dx) / dx.getLength();
-		float ty = Vector3::dot(pos - P, dy) / dy.getLength();
+		double tx = Vector3::dot(pos - P, dx) / dx.getLength();
+		double ty = Vector3::dot(pos - P, dy) / dy.getLength();
 		return objTexture->getColor(tx, ty,false);
 	}
 }
@@ -116,7 +116,7 @@ Vector3 Plane::getNormal(Vector3 pos) {
 /****************************************************/
 /******************    Sphere  **********************/
 /****************************************************/
-Sphere::Sphere(Meterial* m, Texture* t, Vector3 _P, float _r) :P(_P), r(_r) {
+Sphere::Sphere(Meterial* m, Texture* t, Vector3 _P, double _r) :P(_P), r(_r) {
 	type = SPHERE;
 	objMeterial = m;
 	objTexture = t;
@@ -131,29 +131,29 @@ Color Sphere::getColor(Vector3 &pos) {
 	} else  {
 		Vector3 I = pos - P;
 		I.normalize();
-		float a = acos(-Vector3::dot(I, ve));
-		float b = acos(std::min(std::max(Vector3::dot(I, vc) / sin(a), -1.0f), 1.0f));
-		float u = a / PI;
-		float v = b / 2.0f / PI;
+		double a = acos(-Vector3::dot(I, ve));
+		double b = acos(std::min(std::max((float)(Vector3::dot(I, vc)/ sin(a)), -1.0f), 1.0f));
+		double u = a / PI;
+		double v = b / 2.0f / PI;
 		if (Vector3::dot(vc, ve) < 0) v = 1 - v;
 		return objTexture->getColor(u, v,true);
 	}
 }
 
-float Sphere::intersect(Ray &ray, bool &inside) {
+double Sphere::intersect(Ray &ray, bool &inside) {
 	inside = false;
 	Vector3 l = P - ray.o;
-	float tp = Vector3::dot(l,ray.dir);
-	float ll = Vector3::dot(l, l);
-	float rr = r*r;
+	double tp = Vector3::dot(l,ray.dir);
+	double ll = Vector3::dot(l, l);
+	double rr = r*r;
 	if (ll > rr) {
 		if (tp < 0) {
 			return -1;
 		}
 	}
-	float dd = ll - tp*tp;
+	double dd = ll - tp*tp;
 	if (dd >= rr) return -1;
-	float t_ = sqrt(rr - dd);
+	double t_ = sqrt(rr - dd);
 	if (ll >= rr) {
 		return tp - t_;
 	}
@@ -173,14 +173,14 @@ Vector3 Sphere::getNormal(Vector3 pos) {
 }
 
 
-float Area::intersect(Ray &r, bool &inside) {
+double Area::intersect(Ray &r, bool &inside) {
 	inside = false;
 	r.dir.normalize();
 	Vector3 N = Vector3::cross(Dx, Dy);
 	N.normalize();
-	float d = Vector3::dot(N, r.dir);
+	double d = Vector3::dot(N, r.dir);
 	if (fabs(d) < 0.001) return -1;
-	float l = Vector3::dot(N * Vector3::dot(O, N) - r.o, N) / d;
+	double l = Vector3::dot(N * Vector3::dot(O, N) - r.o, N) / d;
 	if (l < 0.001) return -1;
 
 	Vector3 C = r.o + r.dir*l - O;

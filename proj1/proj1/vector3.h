@@ -7,17 +7,17 @@
 
 class Vector3{
 	private:
-		float x,y,z;
+		double x,y,z;
 	public:
-		float getX();
-		float getY();
-		float getZ();
-		Vector3(float, float, float);
+		double getX();
+		double getY();
+		double getZ();
+		Vector3(double, double, double);
 		Vector3(Vector3*);
 		Vector3();
 		void show();
 		void normalize();
-		float getLength();
+		double getLength();
 		
 		static Vector3 cross(Vector3 v1, Vector3 v2){ 
 			return Vector3(v1.y * v2.z - v1.z * v2.y, v1.z * v2.x - v1.x * v2.z, v1.x * v2.y - v1.y * v2.x); 
@@ -34,7 +34,7 @@ class Vector3{
 		static Vector3 div(Vector3 v1,Vector3 v2){
 			return Vector3(v1.x/v2.x,v1.y/v2.y,v1.z/v2.z);
 		}
-		static float dot(Vector3 v1, Vector3 v2) {
+		static double dot(Vector3 v1, Vector3 v2) {
 			return v2.x*v1.x + v1.y*v2.y + v1.z*v2.z;
 		}
 
@@ -68,16 +68,16 @@ class Vector3{
 		friend Vector3 operator * (Vector3 v1,Vector3 v2){
 			return Vector3::mul(v1, v2);
 		}	
-		friend Vector3 operator * (Vector3 v1,float f){
+		friend Vector3 operator * (Vector3 v1,double f){
 			return Vector3::mul(v1,Vector3(f,f,f));
 		}
-		friend Vector3 operator * (float f,Vector3 v1) {
+		friend Vector3 operator * (double f,Vector3 v1) {
 			return Vector3::mul(v1, Vector3(f, f, f));
 		}
 		friend Vector3 operator / (Vector3 v1,Vector3 v2){
 			return Vector3::sub(v1,v2);
 		}	
-		friend Vector3 operator / (Vector3 v1, float f) {
+		friend Vector3 operator / (Vector3 v1, double f) {
 			return Vector3(v1.x /= f,v1.y /= f,v1.z /= f);
 		}
 

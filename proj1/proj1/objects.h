@@ -3,11 +3,11 @@
 #include "common.h"
 
 struct Meterial {
-	float reflect;		//·´Éä
-	float refract;		//ÕÛÉä
-	float diffuse;		//Âþ·´Éä
-	float specular;		//¾µÃæ
-	float diff_reflect;
+	double reflect;		//·´Éä
+	double refract;		//ÕÛÉä
+	double diffuse;		//Âþ·´Éä
+	double specular;		//¾µÃæ
+	double diff_reflect;
 	Meterial() {
 		reflect = 0;
 		refract = 0;
@@ -15,7 +15,7 @@ struct Meterial {
 		specular = 0;
 		diff_reflect = -1;
 	}
-	Meterial(float rfl,float rfr,float dfu,float spcl):reflect(rfl),refract(rfr),diffuse(dfu),specular(spcl){ diff_reflect = -1;}
+	Meterial(double rfl,double rfr,double dfu,double spcl):reflect(rfl),refract(rfr),diffuse(dfu),specular(spcl){ diff_reflect = -1;}
 };
 
 /*		   Texture
@@ -33,7 +33,7 @@ protected:
 public:
 	Texture();
 	Type getType();
-	virtual Color getColor(float x, float y, bool) = 0;
+	virtual Color getColor(double x, double y, bool) = 0;
 };
 
 class PicTexture :public Texture {
@@ -44,7 +44,7 @@ public:
 	PicTexture(std::string);
 	~PicTexture() {}
 	void loadPic();
-	Color getColor(float x, float y,bool);
+	Color getColor(double x, double y,bool);
 };
 
 class ColorTexture :public Texture {
@@ -52,7 +52,7 @@ private:
 	Color textureColor;
 public:
 	ColorTexture(Color c) :textureColor(c) { type = PURE; };
-	Color getColor(float x, float y, bool);
+	Color getColor(double x, double y, bool);
 };
 
 /*******************************************
@@ -75,17 +75,17 @@ public:
 	Object(){}
 	int getType() { return type; }
 	//std::string getName() { return name; }
-	float getReflect() { return objMeterial->reflect; }
-	float getRefract() { return objMeterial->refract; }
-	float getDiffuse() { return objMeterial->diffuse; }
-	float getSpecular() { return objMeterial->specular; }
-	float getDiffReflect() { return objMeterial->diff_reflect; }
+	double getReflect() { return objMeterial->reflect; }
+	double getRefract() { return objMeterial->refract; }
+	double getDiffuse() { return objMeterial->diffuse; }
+	double getSpecular() { return objMeterial->specular; }
+	double getDiffReflect() { return objMeterial->diff_reflect; }
 	bool isLight() { return light; }
 	void setAsLight(Light* _l) { light = true; l = _l; }
 	void setAsLight() { light = true; l = new Light(); }
-	void setAsLight(float brightness) { light = true; l = new Light(); l->brightness = brightness; }
+	void setAsLight(double brightness) { light = true; l = new Light(); l->brightness = brightness; }
 	virtual Color getColor(Vector3 &pos) = 0;
-	virtual float intersect(Ray &r,bool &inside) = 0;
+	virtual double intersect(Ray &r,bool &inside) = 0;
 	virtual Vector3 getLightCenter() { return Vector3(); }
 	virtual Vector3 getNormal(Vector3 pos) = 0;
 };
@@ -96,11 +96,11 @@ private:
 	Vector3 P;
 	Vector3 dx;
 	Vector3 dy;
-	float D;
+	double D;
 public:
-	Plane(Meterial* m, Texture* t, Vector3 _P, Vector3 _n, float _D);
+	Plane(Meterial* m, Texture* t, Vector3 _P, Vector3 _n, double _D);
 	Color getColor(Vector3 &pos);
-	float intersect(Ray &r, bool &inside);
+	double intersect(Ray &r, bool &inside);
 	Vector3 getLightCenter();
 	Vector3 getNormal(Vector3 pos);
 };
@@ -108,12 +108,12 @@ public:
 class Sphere :public Object {
 private:
 	Vector3 P,vn,ve,vc;
-	float r;
+	double r;
 
 public:
-	Sphere(Meterial* m, Texture* t, Vector3 _P, float _r);
+	Sphere(Meterial* m, Texture* t, Vector3 _P, double _r);
 	Color getColor(Vector3 &pos);
-	float intersect(Ray &r, bool &inside);
+	double intersect(Ray &r, bool &inside);
 	Vector3 getLightCenter();
 	Vector3 getNormal(Vector3 pos);
 };
@@ -125,8 +125,8 @@ public:
 	Area(Meterial* m, Texture* t, Vector3 o, Vector3 dx, Vector3 dy,int s) :O(o), Dx(dx), Dy(dy),size(s) { type = AREA; objMeterial = m;objTexture = t;}
 	Vector3 getNormal(Vector3 pos) { return Vector3(0, 0, -1); }
 	Color getColor(Vector3 &pos) { return l->color; };
-	float intersect(Ray &r, bool &inside);
+	double intersect(Ray &r, bool &inside);
 	Vector3 getLightCenter() { return O; };
-	float getSize() { return size; }
+	double getSize() { return size; }
 };
 #endif

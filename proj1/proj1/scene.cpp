@@ -5,8 +5,8 @@ Scene::Scene() {
 	lightCnt = 0;
 }
 
-Meterial* Scene::getMeterial(float reflect,float refract,
-					float diffuse,float specular) {
+Meterial* Scene::getMeterial(double reflect,double refract,
+					double diffuse,double specular) {
 	return new Meterial(reflect, refract, diffuse, specular);
 }
 
@@ -17,11 +17,11 @@ PicTexture* Scene::getPicTexture(std::string path) {
 	return new PicTexture(path);
 }
 
-Sphere* Scene::getSphere(Meterial* m,Texture* t,Vector3 o,float r) {
+Sphere* Scene::getSphere(Meterial* m,Texture* t,Vector3 o,double r) {
 	return new Sphere(m, t, o, r);
 }
 
-Plane* Scene::getPlane(Meterial* m, Texture* t, Vector3 P, Vector3 n,float D) {
+Plane* Scene::getPlane(Meterial* m, Texture* t, Vector3 P, Vector3 n,double D) {
 	return new Plane(m, t, P, n, D);
 }
 
@@ -60,10 +60,10 @@ int Scene::getLightCnt() {
 
 IntersectPoint* Scene::getIntersectObj(Ray &r) {
 	IntersectPoint* res = NULL;
-	float t = 10000;
+	double t = 10000;
 	for (int i = 0; i < objCnt; i++) {
 		bool inside = false;
-		float dis = objs[i]->intersect(r, inside);
+		double dis = objs[i]->intersect(r, inside);
 		if ( dis > 0 && dis < t ) {
 			t = dis;
 			if (res) {
