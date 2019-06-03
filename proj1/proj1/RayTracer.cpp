@@ -60,6 +60,9 @@ void RayTracer::run() {
 	//}
 
 	for (int i = 0; i < imgWidth; i++) {
+		if (i % 20 == 0) {
+			cv::imwrite("result/cur.png", result);
+		}
 #ifdef WIN
 		printf("sampling: %.2lf% %\r", i * 100.0 / imgWidth);
 #endif
@@ -79,6 +82,9 @@ void RayTracer::run() {
 	}
 	//ÖØ²ÉÑù
 	for (int i = 0; i < imgWidth; i++) {
+		if (i % 20 == 0) {
+			cv::imwrite("result/cur.png", result);
+	}
 #ifdef WIN
 		printf("resampling: %.2lf% %\r", i * 100.0 / imgWidth);
 #endif

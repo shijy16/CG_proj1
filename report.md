@@ -14,9 +14,11 @@
 
 ## 二、 贝塞尔曲线
 
-贝塞尔旋转体曲面如下：
+贝塞尔旋转体如下：
 
-![1559486962858](D:\code\computer_graphics\CG_proj1\report_pic\1.png)
+![1559578029728](D:\code\computer_graphics\CG_proj1\report_pic\1.png)
 
-$ \left(\left(1-t\right)\left(\left(1-t\right)\left(\left(1-t\right)x_0+tx_1\right)+t\left(\left(1-t\right)x_1+tx_2\right)\right)+t\left(\left(1-t\right)\left(\left(1-t\right)x_1+tx_2\right)+t\left(\left(1-t\right)x_2+tx_3\right)\right),\left(1-t\right)\left(\left(1-t\right)\left(\left(1-t\right)y_0+ty_1\right)+t\left(\left(1-t\right)y_1+ty_2\right)\right)+t\left(\left(1-t\right)\left(\left(1-t\right)y_1+ty_2\right)+t\left(\left(1-t\right)y_2+ty_3\right)\right)\right) ​$
+旋转曲线如下：
+
+![1559578061922](D:\code\computer_graphics\CG_proj1\report_pic\2.png)
 
