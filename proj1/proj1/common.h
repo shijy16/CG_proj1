@@ -6,6 +6,7 @@
 
 #define PI 3.1415926
 #define EPSILON 0.0001
+#define init3x3matrix(m) {m = new double*[3];for (int i = 0; i < 3; i++) {m[i] = new double[3];for (int j = 0; j < 3; j++) {m[i][j] = 0;}} }
 typedef Vector3 Color;
 
 class Point {

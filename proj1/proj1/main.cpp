@@ -12,6 +12,7 @@
 */
 double SIZE = 3;
 int main(void){
+	srand(time(NULL));
 	time_t start, stop;
 	start = time(NULL);
 	Scene s = Scene();
@@ -62,9 +63,15 @@ int main(void){
 	//stop = time(NULL);
 	//printf("Used Time:%ld\n", (stop - start));
 	//cv::waitKey(0);
+
+
 	double x[4] = { 0.0,35.0,35.0,0.0 };
 	double y[4] = { 0.0,10.0,15.0,5.0 };
 	Bezier* b = new Bezier(4, x, y, Vector3(0, 0, 0));
+	Ray r = Ray(Vector3(5, 0, 20), Vector3(-0.1,0,-1));
+	r.dir.normalize();
+	b->intersect(r);
+	system("pause");
 	b->write("test.obj");
 	return 0;
 }
