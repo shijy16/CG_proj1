@@ -95,12 +95,7 @@ Vector3 Bezier::getF(Ray r, double t, double u, double theta) {
 }
 
 //F的jaccobi行列式
-double** Bezier::getJF(Ray r, double t, double u, double theta) {
-	double** res;
-	res = new double*[3];
-	for (int i = 0; i < 3; i++) {
-		res[i] = new double[3];
-	}
+void Bezier::getJF(Ray r, double t, double u, double theta,double**res) {
 	r.dir.normalize();
 	res[0][0] = r.dir.getX();
 	res[1][0] = r.dir.getY();
@@ -111,19 +106,16 @@ double** Bezier::getJF(Ray r, double t, double u, double theta) {
 	res[0][2] = -cosl(theta)*getX(u);
 	res[1][2] = sinl(theta)*getX(u);
 	res[2][2] = 0.0;
-	return res;
 }
 
 //求逆矩阵
-double** Bezier::inverse(double** mat) {
+void Bezier::inverse(double** mat,double **res) {
 	double determinant = 0;
 	for (int i = 0; i < 3; i++)
 		determinant = determinant + (mat[0][i] * (mat[1][(i + 1) % 3] * mat[2][(i + 2) % 3] - mat[1][(i + 2) % 3] * mat[2][(i + 1) % 3]));
 	
-	double **res;
-	res = new double*[3];
+	
 	for (int i = 0; i < 3; i++) {
-		res[i] = new double[3];
 		for (int j = 0; j < 3; j++) {
 			if (determinant == 0.0f) {
 				res[i][j] = 0;
@@ -133,15 +125,11 @@ double** Bezier::inverse(double** mat) {
 			}
 		}
 	}
-	return res;
 }
 
 //矩阵乘法
-double** Bezier::matrixMul(double** m1 , double** m2) {
-	double **res;
-	res = new double*[3];
+void Bezier::matrixMul(double** m1 , double** m2,double** res) {
 	for (int i = 0; i < 3; i++) {
-		res[i] = new double[3];
 		for (int j = 0; j < 3; j++) {
 			res[i][j] = 0;
 			for (int n = 0; n < 3; n++) {
@@ -149,7 +137,6 @@ double** Bezier::matrixMul(double** m1 , double** m2) {
 			}
 		}
 	}
-	return res;
 }
 
 
@@ -205,7 +192,7 @@ Vector3 Bezier::mxv(double** m, Vector3 v) {
 	return res;
 }
 
-std::pair<double, bool> Bezier::intersect(Ray r) {
+double Bezier::intersect(Ray r) {
 	r.dir.normalize();
 	bool has_ans = false;
 	if (r.dir.getX() == 0.0) {
@@ -219,7 +206,12 @@ std::pair<double, bool> Bezier::intersect(Ray r) {
 	}
 	Vector3 arg = Vector3();
 	Vector3 ans = Vector3(1000000,0,0);
-	for (int j = 0; j < 100; j++) {
+	double** JF;
+	double** i_JF;
+	init3x3matrix(JF);
+	init3x3matrix(i_JF);
+	Vector3 F;
+	for (int j = 0; j < 40; j++) {
 		arg = initNewton(r);
 		if (arg.getX() < 0.0f) continue;
 		bool solved = false;
@@ -227,44 +219,43 @@ std::pair<double, bool> Bezier::intersect(Ray r) {
 			double t = arg.getX();
 			double u = arg.getY();
 			double theta = arg.getZ();
-			Vector3 F = getF(r, t, u, theta);
-			double** JF = getJF(r, t, u, theta);
+			F = getF(r, t, u, theta);
+			getJF(r, t, u, theta,JF);
 	
 			if (std::max(std::max(std::abs(F.getX()), std::abs(F.getY())), std::abs(F.getZ())) < 1e-7) {
 				solved = true;
 				break;
 			}
-			double** i_JF = inverse(JF);
+			inverse(JF,i_JF);
 			
 
 			Vector3 xk = mxv(i_JF, F);
 
 			arg = arg - xk*0.7f;
-			for (int i = 0; i < 3; i++) {
-				free(JF[i]);
-				free(i_JF[i]);
-			}
 
 		}
 		if (solved) {
 			if (arg.getX() < 0.0f) continue;
-			printf("solved: %f\n", arg.getX());
+			//printf("solved: %f\n", arg.getX());
 			if (arg.getX() < ans.getX()) {
 				has_ans = true;
 				ans = arg;
 			}
 		}
 	}
+	for (int i = 0; i < 3; i++) {
+		free(JF[i]);
+		free(i_JF[i]);
+	}
 	if (!has_ans) {
-		return std::pair<double,bool>(-1, false);
+		return -1;
 	}
-	ans.show();
+	//ans.show();
 	double t = ans.getX();
+	//保证法向量指向光线射来的方向
 	lastNorm = getNormal(ans.getY(), ans.getZ());
-	if (Vector3::dot(r.dir, lastNorm) < 0) {
-		return std::pair<double, bool>(t, true);
+	if (Vector3::dot(r.dir, lastNorm) > 0) {
+		lastNorm = Vector3(0,0,0) - lastNorm;
 	}
-	else {
-		return std::pair<double, bool>(t, false);
-	}
+	return t;
 }

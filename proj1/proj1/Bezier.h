@@ -20,17 +20,17 @@ public:
 	double inline getDY(double t);
 	double inline getCoefficient(int n, int i, double u);
 	double inline getDCoefficient(int n, int i, double u);
-	std::pair<double, bool> intersect(Ray r);
+	double intersect(Ray r);
 	Vector3 initNewton(Ray r);
 	Vector3 getF(Ray r, double t, double u, double theta);
-	double** getJF(Ray r, double t, double u, double theta);
+	void getJF(Ray r, double t, double u, double theta,double** res);
 	Vector3 getNormal(double u, double angle);
 	Vector3 curve3d(double u, double angle);
 	void write(std::string file_name);
 
 	static inline int fac(int b);
 	static inline int C(int m,int n);
-	static double** inverse(double**);
-	static double** matrixMul(double**,double**);
+	static void inverse(double**,double**);
+	static void matrixMul(double**,double**,double**);
 	static Vector3 mxv(double** m, Vector3 v);
 };

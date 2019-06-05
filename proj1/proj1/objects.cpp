@@ -187,3 +187,27 @@ double Area::intersect(Ray &r, bool &inside) {
 	if (fabs(Vector3::dot(C, Dy)) > Vector3::dot(Dy, Dy)) return -1.0;
 	return l;
 }
+
+BezierObject::BezierObject(Meterial* m, Texture* t, Bezier* bezier) {
+	type = BEZEIER;
+	objMeterial = m;
+	objTexture = t;
+	myBezier = bezier;
+}
+
+Color BezierObject::getColor(Vector3 pos) {
+	return objTexture->getColor(0.0,0.0,false);
+}
+
+double  BezierObject::intersect(Ray &r, bool &inside) {
+	r.dir.normalize();
+	inside = false;
+	return myBezier->intersect(r);
+}
+
+Vector3 BezierObject::getLightCenter() {
+	return Vector3(-1, -1, -1);
+}
+Vector3 BezierObject::getNormal(Vector3 pos) {
+	return myBezier->lastNorm;
+}

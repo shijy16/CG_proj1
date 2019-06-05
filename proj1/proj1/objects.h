@@ -1,6 +1,7 @@
 #ifndef OBJECTS_H
 #define OBJECTS_H
 #include "common.h"
+#include "Bezier.h"
 
 struct Meterial {
 	double reflect;		//∑¥…‰
@@ -128,5 +129,16 @@ public:
 	double intersect(Ray &r, bool &inside);
 	Vector3 getLightCenter() { return O; };
 	double getSize() { return size; }
+};
+
+class BezierObject :public Object {
+private:
+	Bezier* myBezier;
+public:
+	BezierObject(Meterial* m, Texture* t, Bezier* bezier);
+	Color getColor(Vector3 pos);
+	double intersect(Ray &r, bool &inside);
+	Vector3 getLightCenter();
+	Vector3 getNormal(Vector3 pos);
 };
 #endif
