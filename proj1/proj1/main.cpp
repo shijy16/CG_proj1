@@ -38,24 +38,24 @@ int main(void){
 	//Scene 2
 	Meterial* m1 = s.getMeterial(0.5f, 0, 0.2f, 0.6);
 	ColorTexture* t1 = s.getColorTexture(Color((double)192 / (double)255, (double)192 / (double)255, (double)192 / (double)255));
-	o[1] = s.getSphere(m1, t1, Vector3(150 * SIZE, 100 * SIZE, 150 * SIZE), 80 * SIZE);
+	o[1] = s.getSphere(m1, t1, Vector3(150, 100, 150)*SIZE, 80 * SIZE);
 
 	Meterial* m2 = s.getMeterial(0.2f, 1.33f, 0.5f, 0.8f);
 	ColorTexture* t2 = s.getColorTexture(Color((double)133 / (double)255, (double)133 / (double)255, (double)133 / (double)255));
-	o[0] = s.getSphere(m2, t2, Vector3(150 * SIZE, 300 * SIZE, 150 * SIZE), 80 * SIZE);
+	o[0] = s.getSphere(m2, t2, Vector3(150, 300, 150)*SIZE, 80 * SIZE);
 
 	Meterial* m3 = s.getMeterial(0.5f, 0, 0.2f, 0.6);
 	//m3->diff_reflect = 0.5f;
 	ColorTexture* t3 = s.getColorTexture(Color((double)192 / (double)255, (double)192 / (double)255, (double)192 / (double)255));
-	o[2] = s.getSphere(m3, t3, Vector3(150 * SIZE, 500 * SIZE, 150 * SIZE), 80 * SIZE);
+	o[2] = s.getSphere(m3, t3, Vector3(150, 500, 150)*SIZE, 80 * SIZE);
 
 	Meterial* m4 = s.getMeterial(0.0f, 0, 0.8f, 0.6);
 	PicTexture* t4 = s.getPicTexture("marble.png");
-	o[3] = s.getSphere(m4, t4, Vector3(150 * SIZE, 700 * SIZE, 150 * SIZE), 80 * SIZE);
+	o[3] = s.getSphere(m4, t4, Vector3(150, 700, 150)*SIZE, 80 * SIZE);
 
-	double x[4] = { 0.0,20,40,48 };
-	double y[4] = { 0.0,0,2,20 };
-	Bezier* bezier = new Bezier(4, x, y, Vector3(0, 0, 0));
+	double x[4] = { 0.0,20 * SIZE,40 * SIZE,48 * SIZE };
+	double y[4] = { 0.0,0,2 * SIZE,20 * SIZE };
+	Bezier* bezier = new Bezier(4, x, y, Vector3(100, 100, 50)*SIZE);
 	Meterial* m5 = s.getMeterial(0.0f, 0.0f, 0.8f, 0.2f);
 	ColorTexture* t5 = s.getColorTexture(Color((double)18 / (double)255, (double)110 / (double)255, (double)130 / (double)255));
 	BezierObject* bezierObj = new BezierObject(m5,t5,bezier);

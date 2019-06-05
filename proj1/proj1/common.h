@@ -59,5 +59,25 @@ public:
 	}
 };
 
+//class aabbPlane {
+//	Vector3 n;
+//	double d;
+//public:
+//	aabbPlane()
+//};
+
+class aabb {
+private:
+	double minX, minY, maxX, maxY, minZ, maxZ;
+public:
+	aabb(double minx, double maxx, double miny, double maxy, double minz, double maxz) {
+		minX = minx;
+		maxX = maxx;
+		minY = miny;
+		maxY = maxy;
+		minZ = minz;
+		maxZ = maxz;
+	}
+};
 
 #endif
