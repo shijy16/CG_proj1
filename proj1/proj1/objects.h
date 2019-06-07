@@ -134,6 +134,7 @@ public:
 class BezierObject :public Object {
 private:
 	Bezier* myBezier;
+	AABB myAABB;
 public:
 	BezierObject(Meterial* m, Texture* t, Bezier* bezier);
 	Color getColor(Vector3 pos);

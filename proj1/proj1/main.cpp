@@ -9,7 +9,7 @@
 
 
 */
-double SIZE = 1;
+double SIZE = 3;
 int main(void){
 	srand(time(NULL));
 	time_t start, stop;
@@ -36,36 +36,66 @@ int main(void){
 	//b->buildScene(o, 3, SIZE);
 
 	//Scene 2
+	//Meterial* m1 = s.getMeterial(0.5f, 0, 0.2f, 0.6);
+	//ColorTexture* t1 = s.getColorTexture(Color((double)192 / (double)255, (double)192 / (double)255, (double)192 / (double)255));
+	//o[1] = s.getSphere(m1, t1, Vector3(150, 100, 150)*SIZE, 80 * SIZE);
+
+	//Meterial* m2 = s.getMeterial(0.2f, 1.33f, 0.5f, 0.8f);
+	//ColorTexture* t2 = s.getColorTexture(Color((double)133 / (double)255, (double)133 / (double)255, (double)133 / (double)255));
+	//o[0] = s.getSphere(m2, t2, Vector3(150, 300, 150)*SIZE, 80 * SIZE);
+
+	//Meterial* m3 = s.getMeterial(0.5f, 0, 0.2f, 0.6);
+	////m3->diff_reflect = 0.5f;
+	//ColorTexture* t3 = s.getColorTexture(Color((double)192 / (double)255, (double)192 / (double)255, (double)192 / (double)255));
+	//o[2] = s.getSphere(m3, t3, Vector3(150, 500, 150)*SIZE, 80 * SIZE);
+
+	//Meterial* m4 = s.getMeterial(0.0f, 0, 0.8f, 0.6);
+	//PicTexture* t4 = s.getPicTexture("marble.png");
+	//o[3] = s.getSphere(m4, t4, Vector3(150, 700, 150)*SIZE, 80 * SIZE);
+
+	//double x[4] = { 0.0,40 * SIZE,80 * SIZE,96 * SIZE };
+	//double y[4] = { 0.0,0,4 * SIZE,40 * SIZE };
+
+
+	//Bezier* bezier = new Bezier(4, x, y, Vector3(300, 400, 50)*SIZE);
+	//Meterial* m5 = s.getMeterial(0.0f, 0.0, 0.8f, 0.2f);
+	//ColorTexture* t5 = s.getColorTexture(Color((double)18 / (double)255, (double)110 / (double)255, (double)130 / (double)255));
+	//BezierObject* bezierObj = new BezierObject(m5,t5,bezier);
+	//o[4] = bezierObj;
+
+	//Builder* b = new Builder(SIZE);
+	//b->buildCamera(Vector3(500 * SIZE, 400 * SIZE, 150 * SIZE), Vector3(400 * SIZE, 200 * SIZE, 50 * SIZE), Vector3(0, 0, 1), Vector3(0, 1, 0), 400 * SIZE, 200 * SIZE);
+	//b->buildScene2(o, 5);
+
+	//scene 3
 	Meterial* m1 = s.getMeterial(0.5f, 0, 0.2f, 0.6);
 	ColorTexture* t1 = s.getColorTexture(Color((double)192 / (double)255, (double)192 / (double)255, (double)192 / (double)255));
-	o[1] = s.getSphere(m1, t1, Vector3(150, 100, 150)*SIZE, 80 * SIZE);
+	o[1] = s.getSphere(m1, t1, Vector3(100, 0, 80)*SIZE, 80 * SIZE);
 
 	Meterial* m2 = s.getMeterial(0.2f, 1.33f, 0.5f, 0.8f);
 	ColorTexture* t2 = s.getColorTexture(Color((double)133 / (double)255, (double)133 / (double)255, (double)133 / (double)255));
-	o[0] = s.getSphere(m2, t2, Vector3(150, 300, 150)*SIZE, 80 * SIZE);
+	o[0] = s.getSphere(m2, t2, Vector3(-100, 400, 80)*SIZE, 80 * SIZE);
 
 	Meterial* m3 = s.getMeterial(0.5f, 0, 0.2f, 0.6);
-	//m3->diff_reflect = 0.5f;
+	m3->diff_reflect = 0.5f;
 	ColorTexture* t3 = s.getColorTexture(Color((double)192 / (double)255, (double)192 / (double)255, (double)192 / (double)255));
-	o[2] = s.getSphere(m3, t3, Vector3(150, 500, 150)*SIZE, 80 * SIZE);
+	o[2] = s.getSphere(m3, t3, Vector3(400, 200, 130)*SIZE, 80 * SIZE);
 
 	Meterial* m4 = s.getMeterial(0.0f, 0, 0.8f, 0.6);
 	PicTexture* t4 = s.getPicTexture("marble.png");
-	o[3] = s.getSphere(m4, t4, Vector3(150, 700, 150)*SIZE, 80 * SIZE);
+	o[3] = s.getSphere(m4, t4, Vector3(300, 400, 80)*SIZE, 80 * SIZE);
 
-	double x[4] = { 0.0,20 * SIZE,40 * SIZE,48 * SIZE };
-	double y[4] = { 0.0,0,2 * SIZE,20 * SIZE };
-	Bezier* bezier = new Bezier(4, x, y, Vector3(100, 100, 50)*SIZE);
-	Meterial* m5 = s.getMeterial(0.0f, 0.0f, 0.8f, 0.2f);
+	double x[4] = { 0.0,40 * SIZE,80 * SIZE,96 * SIZE };
+	double y[4] = { 0.0,0,4 * SIZE,40 * SIZE };
+	Bezier* bezier = new Bezier(4, x, y, Vector3(-100, 400, 0)*SIZE);
+	Meterial* m5 = s.getMeterial(0.0f, 0.0, 0.8f, 0.2f);
 	ColorTexture* t5 = s.getColorTexture(Color((double)18 / (double)255, (double)110 / (double)255, (double)130 / (double)255));
 	BezierObject* bezierObj = new BezierObject(m5,t5,bezier);
 	o[4] = bezierObj;
 
 	Builder* b = new Builder(SIZE);
-	b->buildCamera(Vector3(500 * SIZE, 400 * SIZE, 150 * SIZE), Vector3(400 * SIZE, 200 * SIZE, 50 * SIZE), Vector3(0, 0, 1), Vector3(0, 1, 0), 400 * SIZE, 200 * SIZE);
-	b->buildScene2(o, 5);
-
-
+	b->buildCamera(Vector3(1000 * SIZE, 300 * SIZE, 600 * SIZE), Vector3(800 * SIZE, 100 * SIZE, 350 * SIZE), Vector3(-0.8, 0, 0.6), Vector3(0, 1, 0), 400 * SIZE, 300 * SIZE);
+	b->buildScene3(o, 5);
 	b->rayTracer_begin();
 	stop = time(NULL);
 	printf("Used Time:%ld\n", (stop - start));

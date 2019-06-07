@@ -12,11 +12,12 @@ Bezier::Bezier(int num, double* xx, double* yy, Vector3 p) {
 		x[i] = xx[i];
 		y[i] = yy[i];
 		point_cnt++;
-		minX = minX < x[i] ? minX : x[i];
-		minY = minY < y[i] ? minY : y[i];
-		maxX = maxX > x[i] ? maxX : x[i];
-		maxY = maxY > x[i] ? maxY : y[i];
+		minX = (minX < x[i]) ? minX : x[i];
+		minY = (minY < y[i]) ? minY : y[i];
+		maxX = (maxX > x[i]) ? maxX : x[i];
+		maxY = (maxY > y[i]) ? maxY : y[i];
 	}
+	printf("%f,%f\n", minX, maxX);
 }
 
 //阶乘
@@ -77,7 +78,7 @@ double inline Bezier::getDY(double t) {
 
 //x:t,y:u,z:theta 随机取一点
 Vector3 Bezier::initNewton(Ray r) {
-	double u = double(rand()) / double(RAND_MAX);
+	double u = abs(double(rand()) / double(RAND_MAX));
 	double theta = abs(double(rand()) / double(RAND_MAX) *2.0*PI);
 	Vector3 p = curve3d(u, theta);
 	double tx = p.getX();
@@ -211,15 +212,16 @@ double Bezier::intersect(Ray r) {
 	init3x3matrix(JF);
 	init3x3matrix(i_JF);
 	Vector3 F;
-	for (int j = 0; j < 40; j++) {
+	for (int j = 0; j < 50; j++) {
 		arg = initNewton(r);
 		if (arg.getX() < 0.0f) continue;
 		bool solved = false;
-		for (int i = 0; i < 40; i++) {
+		for (int i = 0; i < 50; i++) {
 			double t = arg.getX();
 			double u = arg.getY();
 			double theta = arg.getZ();
 			F = getF(r, t, u, theta);
+			if (u < -0.5 || u > 1.5) break;
 			getJF(r, t, u, theta,JF);
 	
 			if (std::max(std::max(std::abs(F.getX()), std::abs(F.getY())), std::abs(F.getZ())) < 1e-7) {
@@ -236,6 +238,7 @@ double Bezier::intersect(Ray r) {
 		}
 		if (solved) {
 			if (arg.getX() < 0.0f) continue;
+			if (arg.getY() < 0.0f || arg.getY() > 1.0f) continue;
 			//printf("solved: %f\n", arg.getX());
 			if (arg.getX() < ans.getX()) {
 				has_ans = true;
@@ -252,6 +255,7 @@ double Bezier::intersect(Ray r) {
 	}
 	//ans.show();
 	double t = ans.getX();
+	
 	//保证法向量指向光线射来的方向
 	lastNorm = getNormal(ans.getY(), ans.getZ());
 	if (Vector3::dot(r.dir, lastNorm) > 0) {

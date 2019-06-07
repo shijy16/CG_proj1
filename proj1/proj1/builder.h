@@ -13,6 +13,7 @@ public:
 	void buildCamera(Vector3 eye, Vector3 origin, Vector3 dx, Vector3 dy, int x, int y);
 	void buildScene(Object** objs, int num);
 	void buildScene2(Object** objs, int num);
+	void buildScene3(Object** objs, int num);
 	cv::Mat rayTracer_begin();
 };
 

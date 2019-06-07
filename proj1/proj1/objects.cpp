@@ -193,6 +193,10 @@ BezierObject::BezierObject(Meterial* m, Texture* t, Bezier* bezier) {
 	objMeterial = m;
 	objTexture = t;
 	myBezier = bezier;
+
+	myAABB = AABB(myBezier->pos.getX() - myBezier->maxX, myBezier->pos.getX() + myBezier->maxX,
+		myBezier->pos.getY() - myBezier->maxX, myBezier->pos.getY() + myBezier->maxX,
+		myBezier->pos.getZ() + myBezier->minY, myBezier->pos.getZ() + myBezier->maxY);
 }
 
 Color BezierObject::getColor(Vector3 pos) {
@@ -200,7 +204,9 @@ Color BezierObject::getColor(Vector3 pos) {
 }
 
 double  BezierObject::intersect(Ray &r, bool &inside) {
-	r.dir.normalize();
+	if (!myAABB.intersect(r)) {
+		return -1.0;
+	}
 	inside = false;
 	return myBezier->intersect(r);
 }
@@ -208,6 +214,7 @@ double  BezierObject::intersect(Ray &r, bool &inside) {
 Vector3 BezierObject::getLightCenter() {
 	return Vector3(-1, -1, -1);
 }
+
 Vector3 BezierObject::getNormal(Vector3 pos) {
 	return myBezier->lastNorm;
 }

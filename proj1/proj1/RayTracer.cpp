@@ -69,7 +69,6 @@ void RayTracer::run() {
 #ifdef UBUNTU
 		printf("sampling: %.2lf% %\n\r", i * 100.0 / imgWidth);
 #endif
-#pragma omp parallel for
 		for (int j = 0; j < imgHeight; j++) {
 			Ray* r = camera->getCameraRay(i, j);
 			double a = 0.0;
@@ -91,7 +90,6 @@ void RayTracer::run() {
 #ifdef UBUNTU
 		printf("resampling: %.2lf% %\n\r", i * 100.0 / imgWidth);
 #endif
-#pragma omp parallel for
 		for (int j = 0; j < imgHeight; j++) {
 			if ((i == 0 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i, j) && (i == imgWidth - 1 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 2, j)) &&
 				(j == 0 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 1, j - 1)) && (j == imgHeight - 1 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 1, j + 1))))

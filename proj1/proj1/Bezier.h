@@ -3,15 +3,15 @@
 
 class Bezier {
 	Vector3 points[10];
-	Vector3 pos;
 	double x[10];
 	double y[10];
 	int point_cnt;
+public:
+	Vector3 pos;
 	double maxX;
 	double minX;
 	double maxY;
 	double minY;
-public:
 	Vector3 lastNorm;
 	Bezier(int num, double* xx, double* yy, Vector3 p);
 	double inline getX(double t);
