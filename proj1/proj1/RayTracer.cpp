@@ -2,7 +2,7 @@
 #define WIN
 
 void RayTracer::showImg() {
-	cv::imshow("raytracer", result); 
+	//cv::imshow("raytracer", result); 
 }
 
 void RayTracer::writeImg() {

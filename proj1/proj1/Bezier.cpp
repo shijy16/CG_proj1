@@ -216,7 +216,7 @@ double Bezier::intersect(Ray r) {
 		arg = initNewton(r);
 		if (arg.getX() < 0.0f) continue;
 		bool solved = false;
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 700; i++) {
 			double t = arg.getX();
 			double u = arg.getY();
 			double theta = arg.getZ();
@@ -233,7 +233,7 @@ double Bezier::intersect(Ray r) {
 
 			Vector3 xk = mxv(i_JF, F);
 
-			arg = arg - xk*0.7f;
+			arg = arg - xk*0.9f;
 
 		}
 		if (solved) {
