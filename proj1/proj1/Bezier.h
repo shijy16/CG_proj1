@@ -1,5 +1,7 @@
 #include "common.h"
 #include "vector3.h"
+#include "Eigen/Dense"
+using namespace Eigen;
 
 class Bezier {
 	Vector3 points[10];
@@ -21,9 +23,9 @@ public:
 	double inline getCoefficient(int n, int i, double u);
 	double inline getDCoefficient(int n, int i, double u);
 	double intersect(Ray r);
-	Vector3 initNewton(Ray r);
+	Vector3 initNewton(Ray r,int);
 	Vector3 getF(Ray r, double t, double u, double theta);
-	void getJF(Ray r, double t, double u, double theta,double** res);
+	Matrix3d getJF(Ray r, double t, double u, double theta);
 	Vector3 getNormal(double u, double angle);
 	Vector3 curve3d(double u, double angle);
 	void write(std::string file_name);

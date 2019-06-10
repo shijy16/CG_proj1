@@ -60,7 +60,7 @@ int Scene::getLightCnt() {
 
 IntersectPoint* Scene::getIntersectObj(Ray &r) {
 	IntersectPoint* res = NULL;
-	double t = 10000;
+	double t = 1000000;
 	for (int i = 0; i < objCnt; i++) {
 		bool inside = false;
 		double dis = objs[i]->intersect(r, inside);

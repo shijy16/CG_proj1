@@ -36,37 +36,47 @@ int main(void){
 	//b->buildScene(o, 3, SIZE);
 
 	//Scene 2
-	Meterial* m1 = s.getMeterial(0.5f, 0, 0.2f, 0.6);
-	ColorTexture* t1 = s.getColorTexture(Color((double)192 / (double)255, (double)192 / (double)255, (double)192 / (double)255));
-	o[1] = s.getSphere(m1, t1, Vector3(150, 100, 150)*SIZE, 80 * SIZE);
+	//Meterial* m1 = s.getMeterial(0.0f, 1.33f, 0.1f, 0.2f);
+	//ColorTexture* t1 = s.getColorTexture(Color((double)133 / (double)255, (double)133 / (double)255, (double)133 / (double)255));
+	//o[0] = s.getSphere(m1, t1, Vector3(150, 100, 150)*SIZE, 80 * SIZE);
 
-	Meterial* m2 = s.getMeterial(0.2f, 1.33f, 0.5f, 0.8f);
-	ColorTexture* t2 = s.getColorTexture(Color((double)133 / (double)255, (double)133 / (double)255, (double)133 / (double)255));
-	o[0] = s.getSphere(m2, t2, Vector3(150, 300, 150)*SIZE, 80 * SIZE);
+	Meterial* m2 = s.getMeterial(0.6f, 0, 0.2f, 0.6f);
+	ColorTexture* t2 = s.getColorTexture(Color((double)192 / (double)255, (double)192 / (double)255, (double)192 / (double)255));
+	o[1] = s.getSphere(m2, t2, Vector3(150, 100, 150)*SIZE, 80 * SIZE);
 
-	Meterial* m3 = s.getMeterial(0.5f, 0, 0.2f, 0.6);
+	Meterial* m3 = s.getMeterial(0.6f, 0, 0.2f, 0.6);
 	//m3->diff_reflect = 0.5f;
 	ColorTexture* t3 = s.getColorTexture(Color((double)192 / (double)255, (double)192 / (double)255, (double)192 / (double)255));
 	o[2] = s.getSphere(m3, t3, Vector3(150, 500, 150)*SIZE, 80 * SIZE);
 
 	Meterial* m4 = s.getMeterial(0.0f, 0, 0.8f, 0.6);
 	PicTexture* t4 = s.getPicTexture("marble.png");
-	o[3] = s.getSphere(m4, t4, Vector3(150, 700, 150)*SIZE, 80 * SIZE);
+	o[3] = s.getSphere(m4, t4, Vector3(150, 300, 150)*SIZE, 80 * SIZE);
 
-	double x[4] = { 30.0*SIZE,0.0,0,180.0 * SIZE };
-	double y[4] = { 0.0,60.0, 240.0* SIZE,300.0 * SIZE };
+	//double x[4] = { 20.0*SIZE,0.0,0,120.0 * SIZE };
+	//double y[4] = { 0.0,40.0, 160.0* SIZE,200.0 * SIZE };
+	double x[4] = { 0,100.0*SIZE,0,0 * SIZE };
+	double y[4] = { 0,0, 150.0* SIZE,133.33 * SIZE };
 
 
-	Bezier* bezier = new Bezier(4, x, y, Vector3(150, 900, 0)*SIZE);
+	Bezier* bezier = new Bezier(4, x, y, Vector3(200, 300, 250)*SIZE);
 	bezier->write("test.obj");
-	Meterial* m5 = s.getMeterial(0.0f, 0.0, 0.8f, 0.2f);
-	ColorTexture* t5 = s.getColorTexture(Color((double)255 / (double)255, (double)215 / (double)255, (double)0 / (double)255));
+	Meterial* m5 = s.getMeterial(0.0f, 1.33f, 0.1f, 0.2f);
+	ColorTexture* t5 = s.getColorTexture(Color((double)255 / (double)255, (double)255 / (double)255, (double)255 / (double)255));
 	BezierObject* bezierObj = new BezierObject(m5,t5,bezier);
-	o[4] = bezierObj;
+	o[0] = bezierObj;
+	//bezier->curve3d(1, 0).show();
+	//printf("??????\n");
+	//bezier->curve3d(1, PI/2.0f).show();
+	//printf("??????\n");
+	//bezier->curve3d(1, PI).show();
+	//printf("??????\n");
+	//bezier->curve3d(1, PI*1.5f).show();
+	//printf("??????\n");
 
 	Builder* b = new Builder(SIZE);
-	b->buildCamera(Vector3(500 * SIZE, 500 * SIZE, 150 * SIZE), Vector3(400 * SIZE, 300 * SIZE, 50 * SIZE), Vector3(0, 0, 1), Vector3(0, 1, 0), 400 * SIZE, 200 * SIZE);
-	b->buildScene2(o, 5);
+	b->buildCamera(Vector3(450 * SIZE, 300 * SIZE, 150 * SIZE), Vector3(350 * SIZE, 100 * SIZE, 50 * SIZE), Vector3(0, 0, 1), Vector3(0, 1, 0), 400 * SIZE, 400 * SIZE);
+	b->buildScene2(o, 4);
 
 	//scene 3
 	//Meterial* m1 = s.getMeterial(0.5f, 0, 0.2f, 0.6);

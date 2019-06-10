@@ -29,56 +29,81 @@ int inline Bezier::fac(int n) {
 	return ans;
 }
 
-//组合数
-int inline Bezier::C(int m, int n) {
-	return fac(n) / fac(m) / fac(n - m);
-}
-
-//系数
-double inline Bezier::getCoefficient(int n, int i, double u) {
-	return C(i, n)*powl(u, i)*powl(1.0f - u, n - i);
-}
-
-//系数导数
-double inline Bezier::getDCoefficient(int n, int i, double u) {
-	return C(i, n)*(-(n - i)*powl(1.0f - u, n - i - 1)*powl(u, i) + i * powl(u, i - 1)*powl(1.0f - u, n - i));
-}
+////组合数
+//int inline Bezier::C(int m, int n) {
+//	return fac(n) / fac(m) / fac(n - m);
+//}
+//
+////系数
+//double inline Bezier::getCoefficient(int n, int i, double u) {
+//	return C(i, n)*powl(u, i)*powl(1.0f - u, n - i);
+//}
+//
+////系数导数
+//double inline Bezier::getDCoefficient(int n, int i, double u) {
+//	return C(i, n)*(-(n - i)*powl(1.0f - u, n - i - 1)*powl(u, i) + i * powl(u, i - 1)*powl(1.0f - u, n - i));
+//}
 
 double inline Bezier::getX(double t) {
-	double tx = 0;
-	for (int i = 0; i < point_cnt; i++) {
-		tx += x[i] * getCoefficient(point_cnt - 1, i, t);
-	}
-	return tx;
+	//double tx = 0;
+	//for (int i = 0; i < point_cnt; i++) {
+	//	tx += x[i] * getCoefficient(point_cnt - 1, i, t);
+	//}
+	//return tx;
+	return 1 * x[0] * (1 - t)*(1 - t)*(1 - t) +
+		3 * x[1] * t*(1 - t)*(1 - t) +
+		3 * x[2] * t*t*(1 - t) +
+		1 * x[3] * t*t*t;
 }
 
 double inline Bezier::getY(double t) {
-	double tx = 0;
+	/*double tx = 0;
 	for (int i = 0; i < point_cnt; i++) {
 		tx += y[i] * getCoefficient(point_cnt - 1, i, t);
 	}
-	return tx;
+	return tx;*/
+	return 1 * y[0] * (1 - t)*(1 - t)*(1 - t) +
+		3 * y[1] * t*(1 - t)*(1 - t) +
+		3 * y[2] * t*t*(1 - t) +
+		1 * y[3] * t*t*t;
 }
 
 double inline Bezier::getDX(double t) {
-	double tx = 0;
-	for (int i = 0; i < point_cnt; i++) {
-		tx += x[i] * getDCoefficient(point_cnt - 1, i, t);
-	}
-	return tx;
+	//double tx = 0;
+	//for (int i = 0; i < point_cnt; i++) {
+	//	tx += x[i] * getDCoefficient(point_cnt - 1, i, t);
+	//}
+	//return tx;
+	return -3 * x[0] * (1 - t)*(1 - t) +
+		3 * x[1] * (1 - t)*(1 - t) +
+		-6 * x[1] * t*(1 - t) +
+		6 * x[2] * (1 - t)*t +
+		-3 * x[2] * t*t +
+		3 * x[3] * t*t;
 }
 
 double inline Bezier::getDY(double t) {
-	double tx = 0;
-	for (int i = 0; i < point_cnt; i++) {
-		tx += y[i] * getDCoefficient(point_cnt - 1, i, t);
-	}
-	return tx;
+	//double tx = 0;
+	//for (int i = 0; i < point_cnt; i++) {
+	//	tx += y[i] * getDCoefficient(point_cnt - 1, i, t);
+	//}
+	//return tx;
+	return -3 * y[0] * (1 - t)*(1 - t) +
+		3 * y[1] * (1 - t)*(1 - t) +
+		-6 * y[1] * t*(1 - t) +
+		6 * y[2] * (1 - t)*t +
+		-3 * y[2] * t*t +
+		3 * y[3] * t*t;
 }
 
 //x:t,y:u,z:theta 随机取一点
-Vector3 Bezier::initNewton(Ray r) {
+Vector3 Bezier::initNewton(Ray r,int j) {
 	double u = abs(double(rand()) / double(RAND_MAX));
+	if (j == 0) {
+		u = 0;
+	} else if (j == 1) {
+		u = 1;
+	}
 	double theta = abs(double(rand()) / double(RAND_MAX) *2.0*PI);
 	Vector3 p = curve3d(u, theta);
 	double tx = p.getX();
@@ -96,60 +121,61 @@ Vector3 Bezier::getF(Ray r, double t, double u, double theta) {
 }
 
 //F的jaccobi行列式
-void Bezier::getJF(Ray r, double t, double u, double theta,double**res) {
+Matrix3d Bezier::getJF(Ray r, double t, double u, double theta) {
+	Matrix3d res;
 	r.dir.normalize();
-	res[0][0] = r.dir.getX();
-	res[1][0] = r.dir.getY();
-	res[2][0] = r.dir.getZ();
-	res[0][1] = -sinl(theta)*getDX(u);
-	res[1][1] = -cosl(theta)*getDX(u);
-	res[2][1] = -getDY(u);
-	res[0][2] = -cosl(theta)*getX(u);
-	res[1][2] = sinl(theta)*getX(u);
-	res[2][2] = 0.0;
-}
+	res << r.dir.getX(), -sinl(theta)*getDX(u), -cosl(theta)*getX(u),
+		r.dir.getY(), -cosl(theta)*getDX(u), sinl(theta)*getX(u),
+		r.dir.getZ(), -getDY(u), 0;
 
-//求逆矩阵
-void Bezier::inverse(double** mat,double **res) {
-	double determinant = 0;
-	for (int i = 0; i < 3; i++)
-		determinant = determinant + (mat[0][i] * (mat[1][(i + 1) % 3] * mat[2][(i + 2) % 3] - mat[1][(i + 2) % 3] * mat[2][(i + 1) % 3]));
-	
-	
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			if (determinant == 0.0f) {
-				res[i][j] = 0;
-			}
-			else {
-				res[i][j] = ((mat[(j + 1) % 3][(i + 1) % 3] * mat[(j + 2) % 3][(i + 2) % 3]) - (mat[(j + 1) % 3][(i + 2) % 3] * mat[(j + 2) % 3][(i + 1) % 3])) / determinant;
-			}
-		}
-	}
+	return res;
 }
-
-//矩阵乘法
-void Bezier::matrixMul(double** m1 , double** m2,double** res) {
-	for (int i = 0; i < 3; i++) {
-		for (int j = 0; j < 3; j++) {
-			res[i][j] = 0;
-			for (int n = 0; n < 3; n++) {
-				res[i][j] += m1[i][n] * m2[n][j];
-			}
-		}
-	}
-}
+//
+////求逆矩阵
+//void Bezier::inverse(double** mat,double **res) {
+//	double determinant = 0;
+//	for (int i = 0; i < 3; i++)
+//		determinant = determinant + (mat[0][i] * (mat[1][(i + 1) % 3] * mat[2][(i + 2) % 3] - mat[1][(i + 2) % 3] * mat[2][(i + 1) % 3]));
+//	
+//	
+//	for (int i = 0; i < 3; i++) {
+//		for (int j = 0; j < 3; j++) {
+//			if (determinant == 0.0f) {
+//				res[i][j] = 0;
+//			}
+//			else {
+//				res[i][j] = ((mat[(j + 1) % 3][(i + 1) % 3] * mat[(j + 2) % 3][(i + 2) % 3]) - (mat[(j + 1) % 3][(i + 2) % 3] * mat[(j + 2) % 3][(i + 1) % 3])) / determinant;
+//			}
+//		}
+//	}
+//}
+//
+////矩阵乘法
+//void Bezier::matrixMul(double** m1 , double** m2,double** res) {
+//	for (int i = 0; i < 3; i++) {
+//		for (int j = 0; j < 3; j++) {
+//			res[i][j] = 0;
+//			for (int n = 0; n < 3; n++) {
+//				res[i][j] += m1[i][n] * m2[n][j];
+//				
+//			}
+//			printf("%f\t",res[i][j]);
+//		}
+//		printf("\n");
+//	}
+//}
 
 
 //3D坐标垂线
 Vector3 Bezier::getNormal(double u,double v) {
-	double dx = 0, dy = 0;
-	for (int i = 0; i < point_cnt; i++) {
-		double dCoeffient = getDCoefficient(point_cnt - 1, i, u);
-		dx += x[i] * dCoeffient;
-		dy += y[i] * dCoeffient;
-	}
-	return Vector3(dy * sinl(v), dy * cosl(v), -dx);
+	double dx = getDX(u), dy = getDY(u);
+	double xx = getX(u);
+	
+	Vector3 t1(dx*sinl(v),dx*cosl(v),dy);
+	Vector3 t2(cosl(v)*xx, -sinl(v)*xx, 0);
+	t1 = Vector3::cross(t1, t2);
+	t1.normalize();
+	return t1;
 }
 
 //获取3D坐标点
@@ -196,7 +222,7 @@ Vector3 Bezier::mxv(double** m, Vector3 v) {
 double Bezier::intersect(Ray r) {
 	r.dir.normalize();
 	bool has_ans = false;
-	if (r.dir.getX() == 0.0) {
+	/*if (r.dir.getX() == 0.0) {
 		r.dir = r.dir + Vector3(1e-10, 0, 0);
 	}
 	if (r.dir.getY() == 0.0) {
@@ -204,62 +230,56 @@ double Bezier::intersect(Ray r) {
 	}
 	if (r.dir.getZ() == 0.0) {
 		r.dir = r.dir + Vector3(0, 0, 1e-10);
-	}
-	Vector3 arg = Vector3();
-	Vector3 ans = Vector3(1000000,0,0);
-	double** JF;
-	double** i_JF;
-	init3x3matrix(JF);
-	init3x3matrix(i_JF);
-	Vector3 F;
+	}*/
+	Vector3d arg(0,0,0);
+	Vector3d ans(1e80,0,0);
+	Vector3d xk;
+	#pragma omp parallel
+	#pragma omp for schedule(dynamic,2)
 	for (int j = 0; j < 50; j++) {
-		arg = initNewton(r);
-		if (arg.getX() < 0.0f) continue;
+		arg = initNewton(r,j).toEigen();
+		if (arg.x() < 0.0f) continue;
 		bool solved = false;
-		for (int i = 0; i < 700; i++) {
-			double t = arg.getX();
-			double u = arg.getY();
-			double theta = arg.getZ();
-			F = getF(r, t, u, theta);
+		for (int i = 0; i < 50; i++) {
+			double t = arg.x();
+			double u = arg.y();
+			double theta = arg.z();
+			Matrix3d JF;
+			Vector3d F;
+			F = getF(r, t, u, theta).toEigen();
 			if (u < -0.5 || u > 1.5) break;
-			getJF(r, t, u, theta,JF);
+			JF = getJF(r, t, u, theta);
 	
-			if (std::max(std::max(std::abs(F.getX()), std::abs(F.getY())), std::abs(F.getZ())) < 1e-7) {
+			if (std::max(std::max(std::abs(F.x()), std::abs(F.y())), std::abs(F.z())) < 1e-7) {
 				solved = true;
 				break;
 			}
-			inverse(JF,i_JF);
-			
 
-			Vector3 xk = mxv(i_JF, F);
-
-			arg = arg - xk*0.9f;
+			arg = arg - JF.inverse()*F*0.7f;
 
 		}
 		if (solved) {
-			if (arg.getX() < 0.0f) continue;
-			if (arg.getY() < 0.0f || arg.getY() > 1.0f) continue;
+			if (arg.x() < 0) continue;
+			if (arg.y() < 0 || arg.y() > 1) continue;
 			//printf("solved: %f\n", arg.getX());
-			if (arg.getX() < ans.getX()) {
-				has_ans = true;
-				ans = arg;
+			#pragma omp critical
+			{
+				if (arg.x() <= ans.x()) {
+					has_ans = true;
+					ans = arg;
+				}
 			}
 		}
-	}
-	for (int i = 0; i < 3; i++) {
-		free(JF[i]);
-		free(i_JF[i]);
 	}
 	if (!has_ans) {
 		return -1;
 	}
-	//ans.show();
-	double t = ans.getX();
+	double t = ans.x();
 	
 	//保证法向量指向光线射来的方向
-	lastNorm = getNormal(ans.getY(), ans.getZ());
-	if (Vector3::dot(r.dir, lastNorm) > 0) {
+	lastNorm = getNormal(ans.y(), ans.z());
+	/*if (Vector3::dot(r.dir, lastNorm) > 0) {
 		lastNorm = Vector3(0,0,0) - lastNorm;
-	}
+	}*/
 	return t;
 }

@@ -16,9 +16,9 @@
 
 贝塞尔旋转体如下：
 
-![1559578029728](D:\code\computer_graphics\CG_proj1\report_pic\1.png)
+![1559972410406](D:\code\computer_graphics\CG_proj1\report_pic\1.png)
 
 旋转曲线如下：
 
-![1559578061922](D:\code\computer_graphics\CG_proj1\report_pic\2.png)
+![1559972452687](D:\code\computer_graphics\CG_proj1\report_pic\2.png)
 

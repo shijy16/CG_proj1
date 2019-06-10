@@ -28,8 +28,8 @@ Color PicTexture::getColor(double x, double y, bool isSphere) {
 		y *= pic.cols;
 	}
 	else {
-		x /= 10;
-		y /= 10;
+		x /= 5;
+		y /= 5;
 	}
 	int u1 = ((int)x) % pic.rows;
 	int v1 = ((int)y) % pic.cols;
@@ -193,10 +193,14 @@ BezierObject::BezierObject(Meterial* m, Texture* t, Bezier* bezier) {
 	objMeterial = m;
 	objTexture = t;
 	myBezier = bezier;
+	
+	printf("AABB pos:");
+	myBezier->pos.show();
+	printf("\t%f,%f\n", myBezier->pos.getY() - myBezier->maxX, myBezier->pos.getY() + myBezier->maxX);
 
 	myAABB = AABB(myBezier->pos.getX() - myBezier->maxX, myBezier->pos.getX() + myBezier->maxX,
 		myBezier->pos.getY() - myBezier->maxX, myBezier->pos.getY() + myBezier->maxX,
-		myBezier->pos.getZ() + myBezier->minY, myBezier->pos.getZ() + myBezier->maxY);
+		myBezier->pos.getZ() + myBezier->minY - 100, myBezier->pos.getZ() + myBezier->maxY);
 }
 
 Color BezierObject::getColor(Vector3 pos) {
@@ -205,10 +209,19 @@ Color BezierObject::getColor(Vector3 pos) {
 
 double  BezierObject::intersect(Ray &r, bool &inside) {
 	if (!myAABB.intersect(r)) {
-		return -1.0;
+		return -1;
 	}
 	inside = false;
-	return myBezier->intersect(r);
+	double t = myBezier->intersect(r);
+	if (t >= 0) {
+		if (Vector3::dot(myBezier->lastNorm, r.dir) > 0) {
+			inside = true;
+		}
+		return t;
+	}
+	else {
+		return -1;
+	}
 }
 
 Vector3 BezierObject::getLightCenter() {
