@@ -15,7 +15,7 @@ private:
 	int imgHeight;
 	int imgWidth;
 	double MAX_LIGHT_LEN = 1000000;
-	int MAX_DEPTH = 3;
+	int MAX_DEPTH = 5;
 public:
 	RayTracer(Camera* c, Scene* s, int height, int width,int sc) :camera(c), scene(s), imgHeight(height), imgWidth(width), scale(sc){}
 	cv::Mat getImg() { return result; }

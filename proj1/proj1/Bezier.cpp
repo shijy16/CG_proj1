@@ -236,11 +236,11 @@ double Bezier::intersect(Ray r) {
 	Vector3d xk;
 	#pragma omp parallel
 	#pragma omp for schedule(dynamic,2)
-	for (int j = 0; j < 50; j++) {
+	for (int j = 0; j < 30; j++) {
 		arg = initNewton(r,j).toEigen();
 		if (arg.x() < 0.0f) continue;
 		bool solved = false;
-		for (int i = 0; i < 50; i++) {
+		for (int i = 0; i < 40; i++) {
 			double t = arg.x();
 			double u = arg.y();
 			double theta = arg.z();

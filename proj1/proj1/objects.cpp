@@ -200,7 +200,7 @@ BezierObject::BezierObject(Meterial* m, Texture* t, Bezier* bezier) {
 
 	myAABB = AABB(myBezier->pos.getX() - myBezier->maxX, myBezier->pos.getX() + myBezier->maxX,
 		myBezier->pos.getY() - myBezier->maxX, myBezier->pos.getY() + myBezier->maxX,
-		myBezier->pos.getZ() + myBezier->minY - 100, myBezier->pos.getZ() + myBezier->maxY);
+		myBezier->pos.getZ() - 90, myBezier->pos.getZ() + myBezier->maxY);
 }
 
 Color BezierObject::getColor(Vector3 pos) {

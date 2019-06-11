@@ -57,8 +57,8 @@ void Builder::buildScene2(Object** objs, int num) {
 	//lightSource->setAsLight(new Light(Vector3(200 * SIZE, 200 * SIZE, 500 * SIZE), Color(1, 1, 1), 5000, 1));
 	/*Sphere* lightSource = new Sphere(new Meterial(0, 0, 0, 0), new ColorTexture(Color(1, 1, 1)), Vector3(800 * SIZE, 500 * SIZE, 480* SIZE), 40.0);
 	lightSource->setAsLight(new Light(Vector3(800 * SIZE, 500 * SIZE, 480 * SIZE), Color(1, 1, 1), 5000, 1));*/
-	Area* lightSource = new Area(new Meterial(0, 0, 0, 0), new ColorTexture(Color(1, 1, 1)), Vector3(200 * SIZE, 200 * SIZE, 600 * SIZE), Vector3(0, 50 * SIZE, 0), Vector3(50 * SIZE, 0, 0),50*SIZE);
-	lightSource->setAsLight(new Light(Vector3(190 * SIZE, 400 * SIZE, 480 * SIZE), Color(1, 1, 1), 5000, 1));
+	Area* lightSource = new Area(new Meterial(0, 0, 0, 0), new ColorTexture(Color(1, 1, 1)), Vector3(400 * SIZE, 200 * SIZE, 600 * SIZE), Vector3(0, 10 * SIZE, 0), Vector3(10 * SIZE, 0, 0),10*SIZE);
+	lightSource->setAsLight(new Light(Vector3(400 * SIZE, 200 * SIZE, 600 * SIZE), Color(1, 1, 1), 5000, 1));
 	scene->addObj(lightSource);
 	scene->addObj(w1);
 	scene->addObj(w3);

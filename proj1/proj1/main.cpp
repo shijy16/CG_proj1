@@ -55,8 +55,8 @@ int main(void){
 
 	//double x[4] = { 20.0*SIZE,0.0,0,120.0 * SIZE };
 	//double y[4] = { 0.0,40.0, 160.0* SIZE,200.0 * SIZE };
-	double x[4] = { 0,100.0*SIZE,0,0 * SIZE };
-	double y[4] = { 0,0, 150.0* SIZE,133.33 * SIZE };
+	double x[4] = { 0,66.67*SIZE,0,0 * SIZE };
+	double y[4] = { 0,0, 100* SIZE,88.89 * SIZE };
 
 
 	Bezier* bezier = new Bezier(4, x, y, Vector3(200, 300, 250)*SIZE);
@@ -75,7 +75,7 @@ int main(void){
 	//printf("??????\n");
 
 	Builder* b = new Builder(SIZE);
-	b->buildCamera(Vector3(450 * SIZE, 300 * SIZE, 150 * SIZE), Vector3(350 * SIZE, 100 * SIZE, 50 * SIZE), Vector3(0, 0, 1), Vector3(0, 1, 0), 400 * SIZE, 400 * SIZE);
+	b->buildCamera(Vector3(400 * SIZE, 300 * SIZE, 150 * SIZE), Vector3(300 * SIZE, 100 * SIZE, 50 * SIZE), Vector3(0, 0, 1), Vector3(0, 1, 0), 400 * SIZE, 250 * SIZE);
 	b->buildScene2(o, 4);
 
 	//scene 3

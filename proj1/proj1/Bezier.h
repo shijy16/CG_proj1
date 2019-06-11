@@ -20,8 +20,8 @@ public:
 	double inline getY(double t);
 	double inline getDX(double t);
 	double inline getDY(double t);
-	double inline getCoefficient(int n, int i, double u);
-	double inline getDCoefficient(int n, int i, double u);
+	//double inline getCoefficient(int n, int i, double u);
+	//double inline getDCoefficient(int n, int i, double u);
 	double intersect(Ray r);
 	Vector3 initNewton(Ray r,int);
 	Vector3 getF(Ray r, double t, double u, double theta);
@@ -32,7 +32,7 @@ public:
 
 	static inline int fac(int b);
 	static inline int C(int m,int n);
-	static void inverse(double**,double**);
-	static void matrixMul(double**,double**,double**);
+	//static void inverse(double**,double**);
+	//static void matrixMul(double**,double**,double**);
 	static Vector3 mxv(double** m, Vector3 v);
 };

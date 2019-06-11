@@ -1,6 +1,12 @@
 #include "Raytracer.h"
 #define WIN
 
+void writeLog(std::string a) {
+	std::ofstream OutFile("res.log");
+	OutFile << a;
+	OutFile.close();
+}
+
 void RayTracer::showImg() {
 	//cv::imshow("raytracer", result); 
 }
@@ -22,6 +28,7 @@ void RayTracer::writeImg() {
 
 
 void RayTracer::run() {
+	char buf[1024] = "";
 	printf("RayTracer begin\n");
 	result = cv::Mat::zeros(imgWidth, imgHeight,CV_8UC3);
 	int last_obj = -1;
@@ -60,14 +67,15 @@ void RayTracer::run() {
 	//}
 	Color c;
 	for (int i = 0; i < imgWidth; i++) {
-		if (i % 2 == 0) {
-			cv::imwrite("result/cur.png", result);
-		}
+		cv::imwrite("result/cur.png", result);
 #ifdef WIN
+		sprintf_s(buf, "sampling: %d", i);
+		writeLog(buf);
 		printf("sampling: %.2lf% %\r", i * 100.0 / imgWidth);
 #endif
 #ifdef UBUNTU
-		printf("sampling: %.2lf% %\n\r", i * 100.0 / imgWidth);
+		sprintf(buf, "sampling: %d", i);
+		writeLog(buf);
 #endif
 		for (int j = 0; j < imgHeight; j++) {
 			Ray* r = camera->getCameraRay(i, j);
@@ -81,14 +89,15 @@ void RayTracer::run() {
 	}
 	//ÖØ²ÉÑù
 	for (int i = 0; i < imgWidth; i++) {
-		if (i % 2 == 0) {
-			cv::imwrite("result/cur.png", result);
-	}
+		cv::imwrite("result/cur.png", result);
 #ifdef WIN
+		sprintf_s(buf, "resampling: %d", i);
+		writeLog(buf);
 		printf("resampling: %.2lf% %\r", i * 100.0 / imgWidth);
 #endif
 #ifdef UBUNTU
-		printf("resampling: %.2lf% %\n\r", i * 100.0 / imgWidth);
+		sprintf(buf, "resampling: %d", i);
+		writeLog(buf);
 #endif
 		for (int j = 0; j < imgHeight; j++) {
 			if ((i == 0 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i, j) && (i == imgWidth - 1 || result.at<cv::Vec3b>(imgWidth - i - 1, j) == result.at<cv::Vec3b>(imgWidth - i - 2, j)) &&
@@ -159,7 +168,7 @@ double RayTracer::get_shadow(Object* obj, Vector3 intersectPos, int objId, Vecto
 					}
 				}
 				if (sha) {
-					shadow += 1.0f / 100.0f;
+					shadow += 1.0f / 9.0f;
 				}
 				free(inter2plight);
 			}
