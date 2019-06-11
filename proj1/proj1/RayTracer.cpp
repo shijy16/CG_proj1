@@ -75,6 +75,7 @@ void RayTracer::run() {
 #endif
 #ifdef UBUNTU
 		sprintf(buf, "sampling: %d", i);
+		printf("sampling: %.2lf% %\r\n", i * 100.0 / imgWidth);
 		writeLog(buf);
 #endif
 		for (int j = 0; j < imgHeight; j++) {
@@ -97,6 +98,7 @@ void RayTracer::run() {
 #endif
 #ifdef UBUNTU
 		sprintf(buf, "resampling: %d", i);
+		printf("sampling: %.2lf% %\r\n", i * 100.0 / imgWidth);
 		writeLog(buf);
 #endif
 		for (int j = 0; j < imgHeight; j++) {
@@ -144,6 +146,7 @@ double RayTracer::get_shadow(Object* obj, Vector3 intersectPos, int objId, Vecto
 		}
 		free(inter2plight);
 	}
+	//ÈíÒõÓ°
 	else if (obj->getType() == Object::AREA) {
 		L.normalize();
 		shadow = 0.0f;
