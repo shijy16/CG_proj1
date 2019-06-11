@@ -9,7 +9,7 @@
 
 
 */
-double SIZE = 2;
+double SIZE = 3;
 int main(void){
 	srand(time(NULL));
 	time_t start, stop;
@@ -44,14 +44,13 @@ int main(void){
 	ColorTexture* t2 = s.getColorTexture(Color((double)192 / (double)255, (double)192 / (double)255, (double)192 / (double)255));
 	o[1] = s.getSphere(m2, t2, Vector3(150, 100, 150)*SIZE, 80 * SIZE);
 
-	Meterial* m3 = s.getMeterial(0.6f, 0, 0.2f, 0.6);
-	m3->diff_reflect = 0.5f;
+	Meterial* m3 = s.getMeterial(0.2f, 1.33f, 0.0f, 1.3f);
 	ColorTexture* t3 = s.getColorTexture(Color((double)192 / (double)255, (double)192 / (double)255, (double)192 / (double)255));
-	o[2] = s.getSphere(m3, t3, Vector3(150, 500, 150)*SIZE, 80 * SIZE);
+	o[2] = s.getSphere(m3, t3, Vector3(150, 300, 150)*SIZE, 80 * SIZE);
 
 	Meterial* m4 = s.getMeterial(0.0f, 0, 0.8f, 0.6);
 	PicTexture* t4 = s.getPicTexture("marble.png");
-	o[3] = s.getSphere(m4, t4, Vector3(150, 300, 150)*SIZE, 80 * SIZE);
+	o[3] = s.getSphere(m4, t4, Vector3(150, 500, 150)*SIZE, 80 * SIZE);
 
 	//double x[4] = { 20.0*SIZE,0.0,0,120.0 * SIZE };
 	//double y[4] = { 0.0,40.0, 160.0* SIZE,200.0 * SIZE };

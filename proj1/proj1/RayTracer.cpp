@@ -67,7 +67,8 @@ void RayTracer::run() {
 	//}
 	Color c;
 	for (int i = 0; i < imgWidth; i++) {
-		cv::imwrite("result/cur.png", result);
+		if(i % 21 == 0)
+			cv::imwrite("result/cur.png", result);
 #ifdef WIN
 		sprintf_s(buf, "sampling: %d", i);
 		writeLog(buf);
@@ -90,7 +91,8 @@ void RayTracer::run() {
 	}
 	//ÖØ²ÉÑù
 	for (int i = 0; i < imgWidth; i++) {
-		cv::imwrite("result/cur.png", result);
+		if (i % 21 == 0)
+			cv::imwrite("result/cur.png", result);
 #ifdef WIN
 		sprintf_s(buf, "resampling: %d", i);
 		writeLog(buf);
