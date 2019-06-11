@@ -148,8 +148,8 @@ double RayTracer::get_shadow(Object* obj, Vector3 intersectPos, int objId, Vecto
 		L.normalize();
 		shadow = 0.0f;
 		Area* areaLight = (Area*)obj;
-		for (int i = -areaLight->getSize(); i < areaLight->getSize() + 1; i+=scale*10) {
-			for (int j = -areaLight->getSize(); j < areaLight->getSize() + 1; j+= scale * 10) {
+		for (int i = -areaLight->getSize(); i < /*areaLight->getSize() +*/ 1; i+=scale*10) {
+			for (int j = -areaLight->getSize(); j < /*areaLight->getSize() +*/ 1; j+= scale * 10) {
 				//printf("%d,%d\n", i, j);
 				Vector3 lightPos = Vector3(areaLight->getLightCenter().getX() + i, areaLight->getLightCenter().getY() + j, areaLight->getLightCenter().getZ());
 				Vector3 tmpDir = lightPos - intersectPos;
@@ -168,7 +168,7 @@ double RayTracer::get_shadow(Object* obj, Vector3 intersectPos, int objId, Vecto
 					}
 				}
 				if (sha) {
-					shadow += 1.0f / 9.0f;
+					shadow += 1.0f / 4.0f;
 				}
 				free(inter2plight);
 			}
@@ -247,9 +247,9 @@ Color RayTracer::trace(Ray* r,int depth,double length,double refract_idx,double 
 				//printf(">>>>>>%f",diff_reflect);
 				Vector3 RN1 = Vector3(rf_light.getZ(), rf_light.getY(), -rf_light.getX());
 				Vector3 RN2 = Vector3::cross(RN1, rf_light);
-				reflect *= 1.0f / 32.0f;
+				reflect *= 1.0f / 8.0f;
 				
-				for (int i = 0; i < 32; i++) {
+				for (int i = 0; i < 8; i++) {
 					double x_off = (double)rand() / RAND_MAX*2 - 1.0f;
 					double y_off = (double)rand() / RAND_MAX*2 - 1.0f;
 					while (x_off*x_off + y_off * y_off > diff_reflect*diff_reflect) {

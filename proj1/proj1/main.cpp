@@ -9,7 +9,7 @@
 
 
 */
-double SIZE = 3;
+double SIZE = 2;
 int main(void){
 	srand(time(NULL));
 	time_t start, stop;
